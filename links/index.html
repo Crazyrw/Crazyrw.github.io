@@ -150,12 +150,17 @@
               
             </span>
 
-
-<br>
-<span class="h2" id="hitokoto">
-    
-</span>
-
+            <p><a id="rainbow" href=''>🌈 获取中...</a></p>
+            <script>
+              fetch('https://api.eatrice.top')
+                .then(response => response.json())
+                .then(data => {
+                  var rainbow = document.getElementById('rainbow');
+                  rainbow.innerHTML = data.Content;
+                  rainbow.href = "https://rainbow.eatrice.top/?ID=" + data.ID;
+                })
+                .catch(console.error)
+              </script>
 
 
             
