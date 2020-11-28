@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Hexo添加一言或Rainbow</title>
+    <link href="/2020/11/28/Hexo%E6%B7%BB%E5%8A%A0%E4%B8%80%E8%A8%80%E6%88%96Rainbow/"/>
+    <url>/2020/11/28/Hexo%E6%B7%BB%E5%8A%A0%E4%B8%80%E8%A8%80%E6%88%96Rainbow/</url>
+    
+    <content type="html"><![CDATA[<h2 id="1-添加一言"><a href="#1-添加一言" class="headerlink" title="1. 添加一言"></a>1. 添加一言</h2><p>添加一言可以参考另一篇文章。</p><p>地址：<a href="https://pxxyyz.com/posts/30454/">https://pxxyyz.com/posts/30454/</a></p><h2 id="2-添加Rainbow"><a href="#2-添加Rainbow" class="headerlink" title="2.添加Rainbow"></a>2.添加Rainbow</h2><p>参考文档：<a href="https://rainbow.eatrice.top/About">https://rainbow.eatrice.top/About</a></p><p>首先，进行如下配置：这个是blog目录下的_config.yml文件</p><p><img src="/images/Hexo%E6%B7%BB%E5%8A%A0%E4%B8%80%E8%A8%80%E6%88%96Rainbow/image-20201128153713586.png" alt="image-20201128153713586"></p><p>然后，修改layout.ejs</p><p><img src="/images/Hexo%E6%B7%BB%E5%8A%A0%E4%B8%80%E8%A8%80%E6%88%96Rainbow/image-20201128153849837.png" alt="image-20201128153849837"></p><p>在<span>下面添加如下内容：</p><p><img src="/images/Hexo%E6%B7%BB%E5%8A%A0%E4%B8%80%E8%A8%80%E6%88%96Rainbow/image-20201128153936020.png" alt="image-20201128153936020"></p><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;rainbow&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&#x27;&#x27;</span>&gt;</span>🌈 获取中...<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></code></pre><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">fetch(<span class="hljs-string">&#x27;https://api.eatrice.top&#x27;</span>)</span><span class="javascript">  .then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> response.json())</span><span class="javascript">  .then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> &#123;</span><span class="javascript">    <span class="hljs-keyword">var</span> rainbow = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;rainbow&#x27;</span>);</span>    rainbow.innerHTML = data.Content;<span class="javascript">    rainbow.href = <span class="hljs-string">&quot;https://rainbow.eatrice.top/?ID=&quot;</span> + data.ID;</span>  &#125;)<span class="javascript">  .catch(<span class="hljs-built_in">console</span>.error)</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><p>最后，提交到github，就可以看到效果啦！</p><p><img src="/images/Hexo%E6%B7%BB%E5%8A%A0%E4%B8%80%E8%A8%80%E6%88%96Rainbow/image-20201128154045441.png" alt="image-20201128154045441"></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Hexo和Typora的结合使用</title>
     <link href="/2020/11/28/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/"/>
     <url>/2020/11/28/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/</url>
