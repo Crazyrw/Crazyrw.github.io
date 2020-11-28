@@ -437,9 +437,9 @@ Quick
       var title = document.getElementById('subtitle').title;
       
       $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: 'https://api.eatrice.top/GetAll/',
-        headers: {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36 l: https://hexo.fluid-dev.com/docs/guide/"},
+        headers: {},
         dataType: 'json',
         success: function (result) {
           var text;
