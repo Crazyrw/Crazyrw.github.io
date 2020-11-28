@@ -437,14 +437,14 @@ Quick
       var title = document.getElementById('subtitle').title;
       
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: 'https://api.eatrice.top/GetAll/',
         headers: {},
         dataType: 'json',
         success: function (result) {
           var text;
           if (result) {
-            var keys = ''.split('.')
+            var keys = 'Content'.split('.')
             if (result instanceof Array) {
               result = result[0]
             }
