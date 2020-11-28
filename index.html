@@ -47,7 +47,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 55vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -174,13 +174,7 @@
   <div class="row mx-auto index-card">
     
     
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/11/27/Spring5/" target="_self">
-          <img src="/images/bg/post.webp" srcset="/img/loading.gif" alt="Spring5">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
+    <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
         <a href="/2020/11/27/Spring5/">Spring5</a>
@@ -221,13 +215,7 @@ Rod Johnson   SpringFramework创始人，著名作者。他是悉尼大学的博
   <div class="row mx-auto index-card">
     
     
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/11/27/MyBatis/" target="_self">
-          <img src="/images/bg/post.webp" srcset="/img/loading.gif" alt="MyBatis">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
+    <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
         <a href="/2020/11/27/MyBatis/">MyBatis</a>
@@ -281,13 +269,7 @@ SSM  Mybatis: https://mybatis.org/mybatis-3/zh/index.html
   <div class="row mx-auto index-card">
     
     
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/11/27/hello-world/" target="_self">
-          <img src="/images/bg/post.webp" srcset="/img/loading.gif" alt="Hello World">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
+    <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
         <a href="/2020/11/27/hello-world/">Hello World</a>
@@ -455,14 +437,14 @@ Quick
       var title = document.getElementById('subtitle').title;
       
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: 'https://api.eatrice.top/GetAll/',
-        headers: {},
+        headers: {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36 l: https://hexo.fluid-dev.com/docs/guide/"},
         dataType: 'json',
         success: function (result) {
           var text;
           if (result) {
-            var keys = ''.split('.')
+            var keys = 'data,Content'.split('.')
             if (result instanceof Array) {
               result = result[0]
             }
