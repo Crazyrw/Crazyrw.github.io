@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Hexo和Typora的结合使用</title>
+    <link href="/2020/11/28/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/"/>
+    <url>/2020/11/28/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/</url>
+    
+    <content type="html"><![CDATA[<p>搭建好Hexo博客之后，该怎么写博客呢？这时候，Typora登场了，这是一款免费简易没广告的markdown编辑器了。</p><p>其实，两者结合使用只需要设置好图片的保存路径就可以了。</p><p>我们都知道所有的博客文件都保存在/_post/文件夹下。</p><p><img src="/images/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/image-20201128152214573.png" alt="image-20201128152214573"></p><p>我们需要在blog/source下，创建一个与_post同级的文件夹images文件夹，用于存放博客对应的图片。</p><p><img src="/images/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/image-20201128152343888.png" alt="image-20201128152343888"></p><p>下面来对Typora进行设置。</p><p>打开Typora的文件&gt;偏好配置。</p><p><img src="/images/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/image-20201128152545253.png" alt="image-20201128152545253"></p><p>这样的话所有的博客中的图片都将会保存到 <code>/source/images/该博客md文件名/图片名称</code>。</p><p>但是仅仅这样设置还不够，这样设置在typora中倒是能看图片了，但是使用的却是相对于当前md文件的相对路径，可是如果启动hexo，是要用服务器访问的，而服务器显然无法根据这个相对路径正确访问到图片，因此还需要在typora中进行进一步设置。</p><p>每次编写博客时，需要进行设置。在typora菜单栏点击 <code>格式-&gt;图像-&gt;设置图片根目录</code>，将<code>blog/source</code>作为其根目录即可。</p><p><strong>一定要先设置了图片根目录后再插入图片，否则图片路径会不正确！</strong></p><p>除此之外，还需要设置下面两个选项：</p><p><img src="/images/Hexo%E5%92%8CTypora%E7%9A%84%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8/image-20201128152748662.png" alt="image-20201128152748662"></p><p><strong>title时必须设置的，不然hexo没办法识别博客的名称！！</strong></p><p>写完博客之后，可以使用以下三个命令进行提交到github。</p><pre><code class="hljs bash">hexo chexo ghexo d</code></pre>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>搭建Hexo博客</title>
     <link href="/2020/11/28/%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/"/>
     <url>/2020/11/28/%E6%90%AD%E5%BB%BAHexo%E5%8D%9A%E5%AE%A2/</url>
