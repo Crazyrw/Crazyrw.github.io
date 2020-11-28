@@ -150,6 +150,14 @@
               
             </span>
 
+
+<br>
+<span class="h2" id="hitokoto">
+    
+</span>
+
+
+
             
           </div>
 
@@ -432,42 +440,31 @@ Quick
 
   <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
   <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var title = document.getElementById('subtitle').title;
-      
-      $.ajax({
-        type: 'POST',
-        url: 'https://api.eatrice.top/GetAll/',
-        headers: {},
-        dataType: 'json',
-        success: function (result) {
-          var text;
-          if (result) {
-            var keys = 'Content'.split('.')
-            if (result instanceof Array) {
-              result = result[0]
-            }
-            for (const k of keys) {
-              var value = result[k]
-              if (typeof value === 'string') {
-                text = value
-                break
-              } else if (value instanceof Object) {
-                result = value
-              }
-            }
-          }
-          text ? typing(text) : typing(title);
-        },
-        error: function () {
-          typing(title)
-        }
-      })
-      
-    })(window, document);
+    function typing(id, title){
+        var typed = new Typed('#' + id, {
+            strings: [
+              '  ',
+              title + "&nbsp;",
+            ],
+            cursorChar: "_",
+            typeSpeed: 70,
+            loop: false,
+        });
+        typed.stop();
+        $(document).ready(function () {
+            $(".typed-cursor").addClass("h2");
+            typed.start();
+        });
+    }
+    
+        fetch('https://v1.hitokoto.cn')
+        .then(response => response.json())
+        .then(data => {
+           typing("hitokoto", data.hitokoto)
+        })
+        .catch(console.error)
+    
   </script>
-
 
 
   <script  src="/js/local-search.js" ></script>
