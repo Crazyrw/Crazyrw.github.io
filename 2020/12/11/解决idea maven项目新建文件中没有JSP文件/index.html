@@ -17,7 +17,7 @@
   <meta name="description" content="梦想很珍贵，努力特别酷。-xback">
   <meta name="author" content="Crazyrw">
   <meta name="keywords" content="">
-  <title>Hello World - Crazyrw&#39;s blog</title>
+  <title>解决idea maven中新建文件没有JSP选项 - Crazyrw&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
 
@@ -162,7 +162,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Hello World">
+            <span class="h2" id="subtitle" title="解决idea maven中新建文件没有JSP选项">
               
             </span>
 
@@ -185,8 +185,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-27 19:21" pubdate>
-        November 27, 2020 pm
+      <time datetime="2020-12-11 20:10" pubdate>
+        December 11, 2020 pm
       </time>
     </span>
   
@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      75 字
+      86 字
     </span>
   
 
@@ -236,29 +236,33 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Hello World</h1>
+            <h1 style="display: none">解决idea maven中新建文件没有JSP选项</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：14 days ago
+                  本文最后更新于：2 hours ago
                 
               </p>
             
             <div class="markdown-body">
-              <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+              <p>这是我项目的基本结构：</p>
+<img src="/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201148763.png" srcset="/img/loading.gif" alt="image-20201211201148763" style="zoom:50%;" />
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>我的需求是在SpringMVC-02-servlet模块中出现新建JSP选项。</p>
+<p>解决方法：</p>
+<img src="/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201326337.png" srcset="/img/loading.gif" alt="image-20201211201326337" style="zoom:50%;" />
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>点击你需要的模块或者整个项目，然后点击+号。</p>
+<img src="/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201405506.png" srcset="/img/loading.gif" alt="image-20201211201405506" style="zoom:50%;" />
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<img src="/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201507175.png" srcset="/img/loading.gif" alt="image-20201211201507175" style="zoom:50%;" />
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p>选择需要添加的目录。</p>
+<p><img src="/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201542190.png" srcset="/img/loading.gif" alt="image-20201211201542190" style="zoom:50%;" />![image-20201211201638306](/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201638306.png)</p>
+<img src="/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201542190.png" srcset="/img/loading.gif" alt="image-20201211201542190" style="zoom:50%;" />
 
+<p>OK, 成功解决。</p>
+<img src="/images/解决idea maven项目新建文件中没有JSP文件/image-20201211201638306.png" srcset="/img/loading.gif" alt="image-20201211201638306" style="zoom:50%;" />
             </div>
             <hr>
             <div>
@@ -274,15 +278,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/11/27/MyBatis/">
+                      <a href="/2020/12/11/IDEA%20Tomcat%E6%8A%A5%E9%94%99/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MyBatis</span>
+                        <span class="hidden-mobile">IDEA Tomcat报错</span>
                         <span class="visible-mobile">Previous</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2020/12/11/SpringMVC/">
+                        <span class="hidden-mobile">SpringMVC</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
