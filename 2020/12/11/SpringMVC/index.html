@@ -240,7 +240,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：4 minutes ago
+                  本文最后更新于：a few seconds ago
                 
               </p>
             
@@ -490,12 +490,12 @@
 </ol>
 <h2 id="3-第一个MVC程序"><a href="#3-第一个MVC程序" class="headerlink" title="3. 第一个MVC程序"></a>3. 第一个MVC程序</h2><h3 id="3-1-配置版"><a href="#3-1-配置版" class="headerlink" title="3.1 配置版"></a>3.1 配置版</h3><p>==我们先写出整个过程，之后再对整个执行流程进行理解！==</p>
 <ol>
-<li>创建一个module，并添加web支持！</li>
+<li><strong>创建一个module，并添加web支持！</strong></li>
 </ol>
 <p><img src="/images/SpringMVC/image-20201213194158352.png" srcset="/img/loading.gif" alt="image-20201213194158352"></p>
 <p>（web Application）</p>
 <ol start="2">
-<li>配置web.xml</li>
+<li><strong>配置web.xml</strong></li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">web-app</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span></span>
@@ -524,7 +524,7 @@
 <span class="hljs-tag">&lt;/<span class="hljs-name">web-app</span>&gt;</span></code></pre>
 
 <ol start="3">
-<li>确定导入了SpringMVC的依赖</li>
+<li><strong>确定导入了SpringMVC的依赖</strong></li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
@@ -533,7 +533,7 @@
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
 
 <ol start="4">
-<li>编写springmvc-servlet.xml</li>
+<li><strong>编写springmvc-servlet.xml</strong></li>
 </ol>
 <p><img src="/images/SpringMVC/image-20201213200613926.png" srcset="/img/loading.gif" alt="image-20201213200613926"></p>
 <pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
@@ -546,17 +546,17 @@
 <span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
 
 <ol start="5">
-<li>添加  处理映射器</li>
+<li><strong>添加  处理映射器</strong></li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping&quot;</span>/&gt;</span></code></pre>
 
 <ol start="6">
-<li>添加 处理器适配器</li>
+<li><strong>添加 处理器适配器</strong></li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter&quot;</span>/&gt;</span></code></pre>
 
 <ol start="7">
-<li>添加 视图解析器</li>
+<li><strong>添加 视图解析器</strong></li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-comment">&lt;!--视图解析器:DispatcherServlet给他的ModelAndView--&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;InternalResourceViewResolver&quot;</span>&gt;</span>
@@ -567,7 +567,7 @@
 <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></code></pre>
 
 <ol start="8">
-<li>编写我们要操作业务Controller ，要么实现Controller接口，要么增加注解；需要返回一个ModelAndView，装数据，封视图；</li>
+<li><strong>编写我们要操作业务Controller ，要么实现Controller接口，要么增加注解；需要返回一个ModelAndView，装数据，封视图；</strong></li>
 </ol>
 <pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
 
@@ -592,13 +592,13 @@
 &#125;</code></pre>
 
 <ol start="9">
-<li>将自己的类交给SpringIOC容器，注册bean</li>
+<li><strong>将自己的类交给SpringIOC容器，注册bean</strong></li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-comment">&lt;!--Handler--&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;/hello&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.wen.controller.HelloController&quot;</span>/&gt;</span></code></pre>
 
 <ol start="10">
-<li>写要跳转的jsp页面，显示ModelandView存放的数据，以及我们的正常页面；</li>
+<li><strong>写要跳转的jsp页面，显示ModelandView存放的数据，以及我们的正常页面；</strong></li>
 </ol>
 <pre><code class="hljs jsp">&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
 &lt;html&gt;
@@ -611,7 +611,7 @@ $&#123;msg&#125;
 &lt;/html&gt;</code></pre>
 
 <ol start="11">
-<li>配置Tomcat 启动测试！</li>
+<li><strong>配置Tomcat 启动测试！</strong></li>
 </ol>
 <p><img src="/images/SpringMVC/image-20201213201444811.png" srcset="/img/loading.gif" alt="image-20201213201444811"></p>
 <p><img src="/images/SpringMVC/image-20201213201505995.png" srcset="/img/loading.gif" alt="image-20201213201505995"></p>
@@ -661,12 +661,12 @@ $&#123;msg&#125;
 
 
 <h3 id="3-2-注解版"><a href="#3-2-注解版" class="headerlink" title="3.2 注解版"></a>3.2 注解版</h3><ol>
-<li>新建一个Module，springmvc-03-hello-annotation。添加web支持。</li>
+<li><strong>新建一个Module，springmvc-03-hello-annotation。添加web支持。</strong></li>
 </ol>
 <img src="/images/SpringMVC/image-20201213220622511.png" srcset="/img/loading.gif" alt="image-20201213220622511" style="zoom:50%;" />
 
 <ol start="2">
-<li>由于Maven可能存在资源过滤的问题，我们将配置完善</li>
+<li><strong>由于Maven可能存在资源过滤的问题，我们将配置完善</strong></li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
@@ -690,9 +690,9 @@ $&#123;msg&#125;
 <span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span></code></pre>
 
 <ol start="3">
-<li><p>在pom.xml文件引入相关的依赖：主要有Spring框架核心库、Spring MVC、servlet , JSTL等。</p>
+<li><p><strong>在pom.xml文件引入相关的依赖：主要有Spring框架核心库、Spring MVC、servlet , JSTL等。</strong></p>
 </li>
-<li><p>配置web.xml</p>
+<li><p><strong>配置web.xml</strong></p>
 </li>
 </ol>
 <pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
@@ -772,20 +772,22 @@ $&#123;msg&#125;
 
 <span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
 
-<ol>
-<li><p>在视图解析器中我们把所有的视图都存放在/WEB-INF/目录下，这样可以保证视图安全，因为这个目录下的文件，客户端不能直接访问。</p>
+<p>在视图解析器中我们把所有的视图都存放在/WEB-INF/目录下，这样可以保证视图安全，因为这个目录下的文件，客户端不能直接访问。</p>
+<ul>
+<li><p>让IOC的注解生效</p>
 </li>
-<li><ul>
-<li>让IOC的注解生效</li>
-<li>静态资源过滤 ：HTML . JS . CSS . 图片 ， 视频 …..</li>
-<li>MVC的注解驱动</li>
-<li>配置视图解析器</li>
+<li><p>静态资源过滤 ：HTML . JS . CSS . 图片 ， 视频 …..</p>
+</li>
+<li><p>MVC的注解驱动</p>
+</li>
+<li><p>配置视图解析器</p>
+</li>
 </ul>
-</li>
-<li><p>创建Controller</p>
+<ol start="6">
+<li><p><strong>创建Controller</strong></p>
+<p>编写HelloController。</p>
 </li>
 </ol>
-<p>编写HelloController。</p>
 <pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
 
 <span class="hljs-keyword">import</span> org.springframework.stereotype.Controller;
@@ -813,12 +815,9 @@ $&#123;msg&#125;
 </ul>
 <ol start="7">
 <li><p><strong>创建视图层</strong></p>
-</li>
-<li><p>在WEB-INF/ jsp目录中创建hello.jsp ， 视图可以直接取出并展示从Controller带回的信息；</p>
-</li>
-<li><p>可以通过EL表示取出Model中存放的值，或者对象；</p>
-</li>
-<li><pre><code class="jsp">&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+<p>在WEB-INF/ jsp目录中创建hello.jsp ， 视图可以直接取出并展示从Controller带回的信息；</p>
+<p>可以通过EL表示取出Model中存放的值，或者对象；</p>
+<pre><code class="hljs jsp">&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
 &lt;html&gt;
 &lt;head&gt;
     &lt;title&gt;Wen&lt;/title&gt;
@@ -826,23 +825,19 @@ $&#123;msg&#125;
 &lt;body&gt;
 $&#123;msg&#125;
 &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-</li>
-<li><ol start="8">
-<li><strong>配置Tomcat运行</strong></li>
-</ol>
-</li>
-<li><p>配置Tomcat ，  开启服务器 ， 访问 对应的请求路径！</p>
-</li>
-<li><p><img src="/images/SpringMVC/image-20201213223349420.png" srcset="/img/loading.gif" alt="image-20201213223349420"></p>
-</li>
-<li><p><img src="/images/SpringMVC/image-20201213223426273.png" srcset="/img/loading.gif" alt="image-20201213223426273"></p>
-</li>
-<li><p><img src="/images/SpringMVC/image-20201213223319634.png" srcset="/img/loading.gif" alt="image-20201213223319634"></p>
+&lt;/html&gt;</code></pre>
+
+<ol start="8">
+<li><p><strong>配置Tomcat运行</strong></p>
+<p>配置Tomcat ，  开启服务器 ， 访问 对应的请求路径！</p>
 </li>
 </ol>
-<p>OK,成功了！</p>
+<p><img src="/images/SpringMVC/image-20201213223349420.png" srcset="/img/loading.gif" alt="image-20201213223349420"></p>
+<p><img src="/images/SpringMVC/image-20201213223426273.png" srcset="/img/loading.gif" alt="image-20201213223426273"></p>
+<p><img src="/images/SpringMVC/image-20201213223319634.png" srcset="/img/loading.gif" alt="image-20201213223319634"></p>
+</li>
+</ol>
+<p><strong>OK,成功了！</strong></p>
 <h3 id="3-3-小结"><a href="#3-3-小结" class="headerlink" title="3.3 小结"></a>3.3 小结</h3><p>实现步骤其实非常的简单：</p>
 <ol>
 <li>新建一个web项目</li>
