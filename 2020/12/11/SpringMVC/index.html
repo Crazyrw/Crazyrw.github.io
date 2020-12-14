@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      6.6k 字
+      8.8k 字
     </span>
   
 
@@ -1072,6 +1072,441 @@ $&#123;msg&#125;
 
 <p><strong>@GetMapping 是一个组合注解，平时使用的会比较多！</strong></p>
 <p><strong>它所扮演的是 @RequestMapping(method =RequestMethod.GET) 的一个快捷方式。</strong></p>
+<h2 id="5-数据处理及跳转"><a href="#5-数据处理及跳转" class="headerlink" title="5 数据处理及跳转"></a>5 数据处理及跳转</h2><h3 id="5-1-结果跳转方式"><a href="#5-1-结果跳转方式" class="headerlink" title="5.1 结果跳转方式"></a>5.1 结果跳转方式</h3><h4 id="5-1-1-ModelAndView"><a href="#5-1-1-ModelAndView" class="headerlink" title="5.1.1 ModelAndView"></a>5.1.1 <strong>ModelAndView</strong></h4><p>设置ModelAndView对象 , 根据view的名称 , 和视图解析器跳到指定的页面。</p>
+<p>页面 : {视图解析器前缀} + viewName +{视图解析器后缀}</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 视图解析器 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span></span>
+<span class="hljs-tag">      <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;internalResourceViewResolver&quot;</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 前缀 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;prefix&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;/WEB-INF/jsp/&quot;</span> /&gt;</span>
+    <span class="hljs-comment">&lt;!-- 后缀 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;suffix&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;.jsp&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span></code></pre>
+
+<p>对应的controller类:</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ControllerTest1</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Controller</span> </span>&#123;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> ModelAndView <span class="hljs-title">handleRequest</span><span class="hljs-params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+       <span class="hljs-comment">//返回一个模型视图对象</span>
+       ModelAndView mv = <span class="hljs-keyword">new</span> ModelAndView();
+       mv.addObject(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;ControllerTest1&quot;</span>);
+       mv.setViewName(<span class="hljs-string">&quot;test&quot;</span>);
+       <span class="hljs-keyword">return</span> mv;
+  &#125;
+&#125;</code></pre>
+
+<h4 id="5-1-2-ServletAPI"><a href="#5-1-2-ServletAPI" class="headerlink" title="5.1.2 ServletAPI"></a>5.1.2 ServletAPI</h4><p>通过设置ServletAPI , 不需要视图解析器。</p>
+<ol>
+<li><p>通过HttpServletResponse进行<strong>输出</strong></p>
+</li>
+<li><p>通过HttpServletResponse实现<strong>重定向</strong></p>
+</li>
+<li><p>通过HttpServletResponse实现<strong>转发</strong></p>
+</li>
+<li><p>输出</p>
+</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-meta">@RequestMapping(&quot;/HelloController&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloController</span> </span>&#123;
+    <span class="hljs-meta">@RequestMapping(&quot;/result/t1&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test1</span><span class="hljs-params">(HttpServletRequest req, HttpServletResponse rsp)</span> <span class="hljs-keyword">throws</span> IOException </span>&#123;
+        rsp.getWriter().println(<span class="hljs-string">&quot;Hello,Spring BY servlet API&quot;</span>);
+    &#125;
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214161746013.png" srcset="/img/loading.gif" alt="image-20201214161746013"></p>
+<ol start="2">
+<li>重定向</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/result/t2&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">(HttpServletRequest req, HttpServletResponse rsp)</span> <span class="hljs-keyword">throws</span> IOException </span>&#123;
+    rsp.sendRedirect(<span class="hljs-string">&quot;/index.jsp&quot;</span>);
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214162027838.png" srcset="/img/loading.gif" alt="image-20201214162027838"></p>
+<ol start="3">
+<li>转发</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/result/t3&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test3</span><span class="hljs-params">(HttpServletRequest req, HttpServletResponse rsp)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+    <span class="hljs-comment">//转发</span>
+    req.setAttribute(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;/result/t3&quot;</span>);
+    req.getRequestDispatcher(<span class="hljs-string">&quot;/WEB-INF/jsp/hello.jsp&quot;</span>).forward(req,rsp);
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214162214516.png" srcset="/img/loading.gif" alt="image-20201214162214516"></p>
+<h4 id="5-1-3-SpringMVC"><a href="#5-1-3-SpringMVC" class="headerlink" title="5.1.3 SpringMVC"></a>5.1.3 SpringMVC</h4><ol>
+<li><strong>通过SpringMVC来实现转发和重定向 - 无需视图解析器</strong></li>
+</ol>
+<p><strong>测试前，需要将视图解析器注释掉</strong></p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/rsm/t1&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">test1</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-comment">//转发</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;/index.jsp&quot;</span>;
+&#125;
+
+<span class="hljs-meta">@RequestMapping(&quot;/rsm/t2&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">test2</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-comment">//转发二</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;forward:/index.jsp&quot;</span>;
+&#125;
+
+<span class="hljs-meta">@RequestMapping(&quot;/rsm/t3&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">test3</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-comment">//重定向</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/index.jsp&quot;</span>;
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214162623299.png" srcset="/img/loading.gif" alt="image-20201214162623299"></p>
+<p><img src="/images/SpringMVC/image-20201214162633361.png" srcset="/img/loading.gif" alt="image-20201214162633361"></p>
+<p><img src="/images/SpringMVC/image-20201214162644498.png" srcset="/img/loading.gif" alt="image-20201214162644498"></p>
+<ol start="2">
+<li><strong>通过SpringMVC来实现转发和重定向 - 有视图解析器</strong></li>
+</ol>
+<p>转发：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/rsm2/t1&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">test1</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-comment">//转发</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214163212064.png" srcset="/img/loading.gif" alt="image-20201214163212064"></p>
+<p>重定向：</p>
+<p><strong>需要注意的是，重定向不需要视图解析器，本质就是重新请求一个新地方，所以需要注意路径问题！</strong></p>
+<p>正确代码如下：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/rsm2/t2&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">test2</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-comment">//重定向</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/index.jsp&quot;</span>;
+    <span class="hljs-comment">//return &quot;redirect:hello.do&quot;; //hello.do为另一个请求/</span>
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214163340393.png" srcset="/img/loading.gif" alt="image-20201214163340393"></p>
+<p>如果路径写错，如下面所示：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/rsm2/t2&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">test2</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-comment">//重定向</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/index&quot;</span>;
+    <span class="hljs-comment">//return &quot;redirect:hello.do&quot;; //hello.do为另一个请求/</span>
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214163419832.png" srcset="/img/loading.gif" alt="image-20201214163419832"></p>
+<p>会显示找不到该路径。</p>
+<h3 id="5-2-数据处理"><a href="#5-2-数据处理" class="headerlink" title="5.2 数据处理"></a>5.2 数据处理</h3><h4 id="5-2-1-处理提交数据"><a href="#5-2-1-处理提交数据" class="headerlink" title="5.2.1 处理提交数据"></a>5.2.1 处理提交数据</h4><ol>
+<li><strong>提交的域名称和处理方法的参数名一致</strong></li>
+</ol>
+<p>提交数据 : <a target="_blank" rel="noopener" href="http://localhost:8080/hello?name=kuangshen">http://localhost:8080/hello?name=kuangshen</a></p>
+<p>处理方法 :</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/hello&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">hello</span><span class="hljs-params">(String name)</span></span>&#123;
+   System.out.println(name);
+   <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+&#125;</code></pre>
+
+<p>后台输出 : kuangshen</p>
+<ol start="2">
+<li><strong>提交的域名称和处理方法的参数名不一致</strong></li>
+</ol>
+<p>提交数据 : <a target="_blank" rel="noopener" href="http://localhost:8080/hello?username=kuangshen">http://localhost:8080/hello?username=kuangshen</a></p>
+<p>处理方法 :</p>
+<pre><code class="hljs java"><span class="hljs-comment">//@RequestParam(&quot;username&quot;) : username提交的域的名称 .</span>
+<span class="hljs-meta">@RequestMapping(&quot;/hello&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">hello</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(&quot;username&quot;)</span> String name)</span></span>&#123;
+   System.out.println(name);
+   <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+&#125;</code></pre>
+
+<p>后台输出 : kuangshen</p>
+<ol start="3">
+<li><strong>提交的是一个对象</strong></li>
+</ol>
+<p>要求提交的表单域和对象的属性名一致,参数使用对象即可.</p>
+<ol>
+<li>实体类</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>&#123;
+   <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> id;
+   <span class="hljs-keyword">private</span> String name;
+   <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> age;
+   <span class="hljs-comment">//构造</span>
+   <span class="hljs-comment">//get/set</span>
+   <span class="hljs-comment">//tostring()</span>
+&#125;</code></pre>
+
+<ol start="2">
+<li><p>提交数据 : <a target="_blank" rel="noopener" href="http://localhost:8080/mvc04/user?name=kuangshen&amp;id=1&amp;age=15">http://localhost:8080/mvc04/user?name=kuangshen&amp;id=1&amp;age=15</a></p>
+</li>
+<li><p>处理方法 :</p>
+</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/user&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">user</span><span class="hljs-params">(User user)</span></span>&#123;
+   System.out.println(user);
+   <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+&#125;</code></pre>
+
+<p>后台输出 : User{id=1, name=’kuangshen’, age=15}</p>
+<p>说明：如果使用对象的话，<strong>前端传递的参数名和对象的属性名必须一致</strong>，否则就是null。</p>
+<h4 id="5-2-2-数据显示到前端"><a href="#5-2-2-数据显示到前端" class="headerlink" title="5.2.2 数据显示到前端"></a>5.2.2 数据显示到前端</h4><ol>
+<li><strong>通过ModelAndView</strong></li>
+</ol>
+<p>我们前面一直都是如此 . 就不过多解释</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ControllerTest1</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Controller</span> </span>&#123;
+
+   <span class="hljs-function"><span class="hljs-keyword">public</span> ModelAndView <span class="hljs-title">handleRequest</span><span class="hljs-params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+       <span class="hljs-comment">//返回一个模型视图对象</span>
+       ModelAndView mv = <span class="hljs-keyword">new</span> ModelAndView();
+       mv.addObject(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;ControllerTest1&quot;</span>);
+       mv.setViewName(<span class="hljs-string">&quot;test&quot;</span>);
+       <span class="hljs-keyword">return</span> mv;
+  &#125;
+&#125;</code></pre>
+
+<ol start="2">
+<li><strong>通过ModelMap</strong></li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/modelMap&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">sayHello2</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(&quot;name&quot;)</span> String name, ModelMap model)</span></span>&#123;
+    <span class="hljs-comment">//封装要显示到视图中的数据</span>
+    <span class="hljs-comment">//相当于req.setAttribute(&quot;name&quot;,name);</span>
+    model.addAttribute(<span class="hljs-string">&quot;name&quot;</span>,name);
+    System.out.println(name);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214164550465.png" srcset="/img/loading.gif" alt="image-20201214164550465"></p>
+<ol start="3">
+<li><strong>通过Model</strong></li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/hello&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">sayHello</span><span class="hljs-params">(Model model)</span></span>&#123;
+    <span class="hljs-comment">//向模型中添加属性msg与值，可以在JSP页面中取出并渲染</span>
+    model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;hello,,,,SpringMVC&quot;</span>);
+    <span class="hljs-comment">//WEB-INF/jsp/hello.jsp</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214164731139.png" srcset="/img/loading.gif" alt="image-20201214164731139"></p>
+<p><strong>三种方式的对比：</strong></p>
+<p>就对于新手而言简单来说使用区别就是：</p>
+<ul>
+<li><p>Model 只有寥寥几个方法只适合用于储存数据，简化了新手对于Model对象的操作和理解；</p>
+</li>
+<li><p>ModelMap 继承了 LinkedMap ，除了实现了自身的一些方法，同样的继承 LinkedMap 的方法和特性；</p>
+</li>
+<li><p>ModelAndView 可以在储存数据的同时，可以进行设置返回的逻辑视图，进行控制展示层的跳转。</p>
+</li>
+</ul>
+<h4 id="5-2-3-乱码问题"><a href="#5-2-3-乱码问题" class="headerlink" title="5.2.3 乱码问题"></a>5.2.3 乱码问题</h4><p>测试场景：</p>
+<ol>
+<li>index.jsp</li>
+</ol>
+<pre><code class="hljs jsp">&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;$Title$&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;form action=<span class="hljs-string">&quot;/HelloController/e/t&quot;</span> method=<span class="hljs-string">&quot;post&quot;</span>&gt;
+      &lt;input type=<span class="hljs-string">&quot;text&quot;</span> name=<span class="hljs-string">&quot;name&quot;</span>&gt;
+      &lt;input type=<span class="hljs-string">&quot;submit&quot;</span>&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<ol start="2">
+<li>Controller</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-meta">@RequestMapping(&quot;/HelloController&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloController</span> </span>&#123;
+    <span class="hljs-meta">@RequestMapping(&quot;/index&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">sayHello</span><span class="hljs-params">()</span></span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;index&quot;</span>;
+    &#125;
+    <span class="hljs-meta">@RequestMapping(&quot;/e/t&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">sayHello2</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(&quot;name&quot;)</span> String name, ModelMap model)</span></span>&#123;
+        <span class="hljs-comment">//封装要显示到视图中的数据</span>
+        <span class="hljs-comment">//相当于req.setAttribute(&quot;name&quot;,name);</span>
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>,name);
+        System.out.println(name);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+    &#125;
+&#125;</code></pre>
+
+<ol start="3">
+<li>hello.jsp</li>
+</ol>
+<pre><code class="hljs jsp">&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Wen&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+$&#123;msg&#125;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<ol start="4">
+<li>配置Tomcat，运行测试</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201214171936519.png" srcset="/img/loading.gif" alt="image-20201214171936519"></p>
+<p>出现乱码问题！</p>
+<p>不得不说，乱码问题是在我们开发中十分常见的问题，也是让我们程序猿比较头大的问题！</p>
+<p>以前乱码问题通过过滤器解决，而SpringMVC给我们提供了一个过滤器，可以在web.xml中配置。</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">filter</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-class</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">init-param</span>&gt;</span>
+       <span class="hljs-tag">&lt;<span class="hljs-name">param-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">param-name</span>&gt;</span>
+       <span class="hljs-tag">&lt;<span class="hljs-name">param-value</span>&gt;</span>utf-8<span class="hljs-tag">&lt;/<span class="hljs-name">param-value</span>&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">init-param</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">filter-mapping</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/*<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">filter-mapping</span>&gt;</span></code></pre>
+
+<p>修改了xml文件需要重启服务器！</p>
+<p><img src="/images/SpringMVC/image-20201214172202869.png" srcset="/img/loading.gif" alt="image-20201214172202869"></p>
+<p>OK，正常显示了！</p>
+<p>但是我们发现，有些极端情况下，这个过滤器对get的支持不好。</p>
+<p><strong>处理方法：</strong></p>
+<ol>
+<li>修改tomcat配置文件 ：设置编码！</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201214173105422.png" srcset="/img/loading.gif" alt="image-20201214173105422"></p>
+<p>如果只是设置Tomcat编码，页面跳转时，还是会出现乱码。<strong>最好定义下面的自定义过滤器。</strong></p>
+<ol start="2">
+<li>自定义过滤器</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.utils;
+
+<span class="hljs-keyword">import</span> javax.servlet.*;
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpServletRequest;
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpServletRequestWrapper;
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpServletResponse;
+<span class="hljs-keyword">import</span> java.io.IOException;
+<span class="hljs-keyword">import</span> java.io.UnsupportedEncodingException;
+<span class="hljs-keyword">import</span> java.util.Map;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * 解决get和post请求 全部乱码的过滤器</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GenericEncodingFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Filter</span> </span>&#123;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">destroy</span><span class="hljs-params">()</span> </span>&#123;
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doFilter</span><span class="hljs-params">(ServletRequest request, ServletResponse response, FilterChain chain)</span> <span class="hljs-keyword">throws</span> IOException, ServletException </span>&#123;
+        <span class="hljs-comment">//处理response的字符编码</span>
+        HttpServletResponse myResponse=(HttpServletResponse) response;
+        myResponse.setContentType(<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span>);
+
+        <span class="hljs-comment">// 转型为与协议相关对象</span>
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        <span class="hljs-comment">// 对request包装增强</span>
+        HttpServletRequest myrequest = <span class="hljs-keyword">new</span> MyRequest(httpServletRequest);
+        chain.doFilter(myrequest, response);
+    &#125;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">(FilterConfig filterConfig)</span> <span class="hljs-keyword">throws</span> ServletException </span>&#123;
+    &#125;
+
+&#125;
+
+<span class="hljs-comment">//自定义request对象，HttpServletRequest的包装类</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyRequest</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HttpServletRequestWrapper</span> </span>&#123;
+
+    <span class="hljs-keyword">private</span> HttpServletRequest request;
+    <span class="hljs-comment">//是否编码的标记</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> hasEncode;
+    <span class="hljs-comment">//定义一个可以传入HttpServletRequest对象的构造函数，以便对其进行装饰</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MyRequest</span><span class="hljs-params">(HttpServletRequest request)</span> </span>&#123;
+        <span class="hljs-keyword">super</span>(request);<span class="hljs-comment">// super必须写</span>
+        <span class="hljs-keyword">this</span>.request = request;
+    &#125;
+
+    <span class="hljs-comment">// 对需要增强方法 进行覆盖</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Map <span class="hljs-title">getParameterMap</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-comment">// 先获得请求方式</span>
+        String method = request.getMethod();
+        <span class="hljs-keyword">if</span> (method.equalsIgnoreCase(<span class="hljs-string">&quot;post&quot;</span>)) &#123;
+            <span class="hljs-comment">// post请求</span>
+            <span class="hljs-keyword">try</span> &#123;
+                <span class="hljs-comment">// 处理post乱码</span>
+                request.setCharacterEncoding(<span class="hljs-string">&quot;utf-8&quot;</span>);
+                <span class="hljs-keyword">return</span> request.getParameterMap();
+            &#125; <span class="hljs-keyword">catch</span> (UnsupportedEncodingException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (method.equalsIgnoreCase(<span class="hljs-string">&quot;get&quot;</span>)) &#123;
+            <span class="hljs-comment">// get请求</span>
+            Map&lt;String, String[]&gt; parameterMap = request.getParameterMap();
+            <span class="hljs-keyword">if</span> (!hasEncode) &#123; <span class="hljs-comment">// 确保get手动编码逻辑只运行一次</span>
+                <span class="hljs-keyword">for</span> (String parameterName : parameterMap.keySet()) &#123;
+                    String[] values = parameterMap.get(parameterName);
+                    <span class="hljs-keyword">if</span> (values != <span class="hljs-keyword">null</span>) &#123;
+                        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; values.length; i++) &#123;
+                            <span class="hljs-keyword">try</span> &#123;
+                                <span class="hljs-comment">// 处理get乱码</span>
+                                values[i] = <span class="hljs-keyword">new</span> String(values[i]
+                                        .getBytes(<span class="hljs-string">&quot;ISO-8859-1&quot;</span>), <span class="hljs-string">&quot;utf-8&quot;</span>);
+                            &#125; <span class="hljs-keyword">catch</span> (UnsupportedEncodingException e) &#123;
+                                e.printStackTrace();
+                            &#125;
+                        &#125;
+                    &#125;
+                &#125;
+                hasEncode = <span class="hljs-keyword">true</span>;
+            &#125;
+            <span class="hljs-keyword">return</span> parameterMap;
+        &#125;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">super</span>.getParameterMap();
+    &#125;
+
+    <span class="hljs-comment">//取一个值</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getParameter</span><span class="hljs-params">(String name)</span> </span>&#123;
+        Map&lt;String, String[]&gt; parameterMap = getParameterMap();
+        String[] values = parameterMap.get(name);
+        <span class="hljs-keyword">if</span> (values == <span class="hljs-keyword">null</span>) &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+        &#125;
+        <span class="hljs-keyword">return</span> values[<span class="hljs-number">0</span>]; <span class="hljs-comment">// 取回参数的第一个值</span>
+    &#125;
+
+    <span class="hljs-comment">//取所有值</span>
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> String[] getParameterValues(String name) &#123;
+        Map&lt;String, String[]&gt; parameterMap = getParameterMap();
+        String[] values = parameterMap.get(name);
+        <span class="hljs-keyword">return</span> values;
+    &#125;
+&#125;</code></pre>
+
+<p>修改web.xml文件。</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">filter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">filter-class</span>&gt;</span>com.wen.utils.GenericEncodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-class</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">init-param</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">param-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">param-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">param-value</span>&gt;</span>utf-8<span class="hljs-tag">&lt;/<span class="hljs-name">param-value</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">init-param</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">filter-mapping</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/*<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">filter-mapping</span>&gt;</span></code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214173315307.png" srcset="/img/loading.gif" alt="image-20201214173315307"></p>
+<p><strong>乱码问题，需要平时多注意，在尽可能能设置编码的地方，都设置为统一编码 UTF-8！</strong></p>
 <p>//to be continued</p>
 
             </div>
