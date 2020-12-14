@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      8.8k 字
+      9.1k 字
     </span>
   
 
@@ -240,7 +240,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：a few seconds ago
+                  本文最后更新于：a minute ago
                 
               </p>
             
@@ -1507,6 +1507,97 @@ $&#123;msg&#125;
 
 <p><img src="/images/SpringMVC/image-20201214173315307.png" srcset="/img/loading.gif" alt="image-20201214173315307"></p>
 <p><strong>乱码问题，需要平时多注意，在尽可能能设置编码的地方，都设置为统一编码 UTF-8！</strong></p>
+<h2 id="6-整合SSM框架"><a href="#6-整合SSM框架" class="headerlink" title="6 整合SSM框架"></a>6 整合SSM框架</h2><p>依赖：junit 数据库驱动 连接池 servlet jsp mybatis spring-mybatis spring-webmvc spring-jdbc lombok aop</p>
+<ol>
+<li><p>准备好数据库环境</p>
+</li>
+<li><p>基本环境的搭建:导包、添加web支持</p>
+</li>
+<li><p>创建项目的基本结构 </p>
+</li>
+</ol>
+<ul>
+<li>com.wem.pojo controller service mapper utils</li>
+<li>database.properties（数据库配置文件）</li>
+<li>applicationContext.xml（spring的核心配置文件）</li>
+<li>mybatis-config.xml（mybatis的核心配置文件）</li>
+<li>spring-mapper.xml（spring整合mybatis）</li>
+<li>spring-service.xml（spring整合service）</li>
+<li>spring-mvc.xml（spring整合controller）</li>
+</ul>
+<ol start="4">
+<li>mybatis层的编写</li>
+</ol>
+<ul>
+<li>database.properties</li>
+<li>IDEA关联数据库</li>
+<li>编写mybatis-config.xml  一般只写pojo包的别名和扫描包</li>
+<li>编写pojo  使用lombok</li>
+<li>编写mapper接口</li>
+<li>编写mapper.xml</li>
+</ul>
+<ol start="5">
+<li>service层的编写</li>
+</ol>
+<ul>
+<li>编写service接口 以及实现类</li>
+</ul>
+<ol start="6">
+<li>spring层</li>
+</ol>
+<ul>
+<li><p>整合mybatis </p>
+<ul>
+<li>spring-mapper.xml</li>
+</ul>
+<ol>
+<li>关联数据库文件</li>
+<li>数据库连接池</li>
+<li>配置SqlSessionFactory对象</li>
+<li>实现mapper接口注入到spring容器（之前我们写了一个utils类，现在可以通过配置动态实现）  com.wen.mapper</li>
+</ol>
+</li>
+<li><p>整合service</p>
+<ul>
+<li>spring-service.xml</li>
+</ul>
+<ol>
+<li>扫描service相关的bean  com.wen.service 注解代替：@Service</li>
+<li>实现类serviceImpl注入到IOC容器中 注解代替：@Autowired</li>
+<li>配置事务管理器，注入数据库连接池</li>
+</ol>
+</li>
+</ul>
+<ol start="7">
+<li>springMVC层</li>
+</ol>
+<ul>
+<li><p>编写web.xml</p>
+<ul>
+<li>DispatcherServlet</li>
+<li>乱码过滤</li>
+</ul>
+</li>
+<li><p>spring-mvc.xml</p>
+<ul>
+<li>开启SpringMVC注解驱动 @Controller @RequestMapping</li>
+<li>静态资源默认servlet配置</li>
+<li>配置jsp 显示ViewResolver视图解析器</li>
+<li>扫描web相关的bean com.wen.controller</li>
+</ul>
+</li>
+<li><p>applicationContext.xml</p>
+<p>import三个文件:spring-mapper.xml  spring-service.xml  spring-mvc.xml</p>
+</li>
+</ul>
+<ol start="8">
+<li><p>Controller类的编写</p>
+</li>
+<li><p>视图层的编写</p>
+</li>
+<li><p>配置Tomcat，测试运行</p>
+</li>
+</ol>
 <p>//to be continued</p>
 
             </div>
