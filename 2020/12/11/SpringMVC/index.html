@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.8k 字
+      6.6k 字
     </span>
   
 
@@ -838,7 +838,241 @@ $&#123;msg&#125;
 <p>==使用springMVC必须配置的三大件：==</p>
 <p>==<strong>处理器映射器、处理器适配器、视图解析器</strong>==</p>
 <p>==通常，我们只需要<strong>手动配置视图解析器</strong>，而<strong>处理器映射器</strong>和<strong>处理器适配器</strong>只需要开启<strong>注解驱动</strong>即可，而省去了大段的xml配置==</p>
-<h2 id="4-RestFul和控制器"><a href="#4-RestFul和控制器" class="headerlink" title="4. RestFul和控制器"></a>4. RestFul和控制器</h2><p>//to be continued</p>
+<h2 id="4-RestFul和控制器"><a href="#4-RestFul和控制器" class="headerlink" title="4. RestFul和控制器"></a>4. RestFul和控制器</h2><h3 id="4-1-Controller控制器"><a href="#4-1-Controller控制器" class="headerlink" title="4.1 Controller控制器"></a>4.1 Controller控制器</h3><ul>
+<li>控制器复杂提供访问应用程序的行为，通常通过<strong>接口定义</strong>或注<strong>解定义</strong>两种方法实现。</li>
+<li><strong>控制器负责解析用户的请求并将其转换为一个模型。</strong></li>
+<li>在Spring MVC中一个控制器类可以包含多个方法</li>
+<li>在Spring MVC中，对于Controller的配置方式有很多种</li>
+</ul>
+<h4 id="4-1-1-实现Controller接口"><a href="#4-1-1-实现Controller接口" class="headerlink" title="4.1.1 实现Controller接口"></a>4.1.1 <strong>实现Controller接口</strong></h4><p>Controller是一个接口，在org.springframework.web.servlet.mvc包下，接口中只有一个方法；</p>
+<pre><code class="hljs java"><span class="hljs-comment">//实现该接口的类获得控制器功能</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">Controller</span> </span>&#123;
+   <span class="hljs-comment">//处理请求且返回一个模型(数据)与视图对象</span>
+   <span class="hljs-function">ModelAndView <span class="hljs-title">handleRequest</span><span class="hljs-params">(HttpServletRequest var1,HttpServletResponse var2)</span> <span class="hljs-keyword">throws</span> Exception</span>;
+&#125;</code></pre>
+
+<p><strong>测试：</strong></p>
+<ol>
+<li>编写一个TestController类</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
+
+
+
+<span class="hljs-keyword">import</span> org.springframework.web.servlet.ModelAndView;
+<span class="hljs-keyword">import</span> org.springframework.web.servlet.mvc.Controller;
+
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpServletRequest;
+<span class="hljs-keyword">import</span> javax.servlet.http.HttpServletResponse;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestController</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Controller</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ModelAndView <span class="hljs-title">handleRequest</span><span class="hljs-params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+
+        <span class="hljs-comment">//返回一个模型视图对象</span>
+        ModelAndView mv = <span class="hljs-keyword">new</span> ModelAndView();
+        mv.addObject(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;Test1Controller&quot;</span>);
+        mv.setViewName(<span class="hljs-string">&quot;test&quot;</span>);
+        <span class="hljs-keyword">return</span> mv;
+    &#125;
+&#125;</code></pre>
+
+<ol start="2">
+<li>去Spring配置文件中注册请求的bean；name对应请求路径，class对应处理请求的类</li>
+</ol>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;/test&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.wen.controller.TestController&quot;</span>/&gt;</span></code></pre>
+
+<ol start="3">
+<li>编写test.jsp</li>
+</ol>
+<pre><code class="hljs jsp">&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+$&#123;msg&#125;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<ol start="4">
+<li>配置Tomcat运行测试，我这里没有项目发布名配置的就是一个/，所以请求不用加项目名，OK！</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201214143353792.png" srcset="/img/loading.gif" alt="image-20201214143353792"></p>
+<p><strong>说明：</strong></p>
+<ul>
+<li>实现接口Controller定义控制器是较老的办法</li>
+<li><strong>缺点是：一个控制器中只有一个方法，如果要多个方法则需要定义多个Controller；定义的方式比较麻烦；</strong>🙃</li>
+</ul>
+<h4 id="4-1-2注解-Controller"><a href="#4-1-2注解-Controller" class="headerlink" title="4.1.2注解@Controller"></a>4.1.2注解@Controller</h4><ul>
+<li>@Controller注解类型用于声明Spring类的实例是一个控制器（在讲IOC时还提到了另外3个注解）；</li>
+<li>Spring可以使用扫描机制来找到应用程序中所有基于注解的控制器类，为了保证Spring能找到你的控制器，需要在配置文件中声明组件扫描。</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 自动扫描包，让指定包下的注解生效,由IOC容器统一管理 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">context:component-scan</span> <span class="hljs-attr">base-package</span>=<span class="hljs-string">&quot;com.wen.controller&quot;</span>/&gt;</span></code></pre>
+
+<ul>
+<li>使用注解实现的类HelloController，如下：</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
+
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Controller;
+<span class="hljs-keyword">import</span> org.springframework.ui.Model;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;
+
+<span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloController</span> </span>&#123;
+    <span class="hljs-comment">//真实访问地址 : 项目名/HelloController/hello</span>
+    <span class="hljs-meta">@RequestMapping(&quot;/hello&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">sayHello</span><span class="hljs-params">(Model model)</span></span>&#123;
+        <span class="hljs-comment">//向模型中添加属性msg与值，可以在JSP页面中取出并渲染</span>
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;hello,,,,SpringMVC&quot;</span>);
+        <span class="hljs-comment">//WEB-INF/jsp/hello.jsp</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+    &#125;
+&#125;</code></pre>
+
+<ul>
+<li>配置Tomcat运行测试</li>
+</ul>
+<p><img src="/images/SpringMVC/image-20201214143856104.png" srcset="/img/loading.gif" alt="image-20201214143856104"></p>
+<p><strong>注解方式是平时使用的最多的方式！</strong></p>
+<h3 id="4-2-RequestMapping"><a href="#4-2-RequestMapping" class="headerlink" title="4.2 RequestMapping"></a>4.2 RequestMapping</h3><p><strong>@RequestMapping</strong></p>
+<p>@RequestMapping注解用于映射url到控制器类或一个特定的处理程序方法。可用于类或方法上。用于类上，表示类中的所有响应请求的方法都是以该地址作为父路径。</p>
+<p><strong>测试：</strong></p>
+<ol>
+<li>控制器类</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
+
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Controller;
+<span class="hljs-keyword">import</span> org.springframework.ui.Model;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;
+
+<span class="hljs-meta">@Controller</span>
+<span class="hljs-meta">@RequestMapping(&quot;/HelloController&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloController</span> </span>&#123;
+    <span class="hljs-comment">//真实访问地址 : 项目名/HelloController/hello</span>
+    <span class="hljs-meta">@RequestMapping(&quot;/hello&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">sayHello</span><span class="hljs-params">(Model model)</span></span>&#123;
+        <span class="hljs-comment">//向模型中添加属性msg与值，可以在JSP页面中取出并渲染</span>
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;hello,,,,SpringMVC&quot;</span>);
+        <span class="hljs-comment">//WEB-INF/jsp/hello.jsp</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+    &#125;
+&#125;</code></pre>
+
+<ol start="2">
+<li>配置Tomcat，测试运行！</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201214144738354.png" srcset="/img/loading.gif" alt="image-20201214144738354"></p>
+<h3 id="4-3-RestFul-风格"><a href="#4-3-RestFul-风格" class="headerlink" title="4.3 RestFul 风格"></a>4.3 RestFul 风格</h3><p><strong>概念：</strong></p>
+<p>Restful就是一个资源定位及资源操作的风格。不是标准也不是协议，只是一种风格。基于这个风格设计的软件可以更简洁，更有层次，更易于实现缓存等机制。</p>
+<p><strong>功能</strong></p>
+<ul>
+<li><p>资源：互联网所有的事物都可以被抽象为资源</p>
+</li>
+<li><p>资源操作：使用POST、DELETE、PUT、GET，使用不同方法对资源进行操作。</p>
+</li>
+<li><p>分别对应 添加、 删除、修改、查询。</p>
+</li>
+</ul>
+<p><strong>传统方式操作资源</strong>  ：通过不同的参数来实现不同的效果！方法单一，post 和 get</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item/queryItem.action?id=1">http://127.0.0.1/item/queryItem.action?id=1</a> 查询,GET</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item/saveItem.action">http://127.0.0.1/item/saveItem.action</a> 新增,POST</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item/updateItem.action">http://127.0.0.1/item/updateItem.action</a> 更新,POST</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item/deleteItem.action?id=1">http://127.0.0.1/item/deleteItem.action?id=1</a> 删除,GET或POST</p>
+<p><strong>使用RESTful操作资源</strong> ：可以通过不同的请求方式来实现不同的效果！如下：请求地址一样，但是功能可以不同！</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item/1">http://127.0.0.1/item/1</a> 查询,GET</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item">http://127.0.0.1/item</a> 新增,POST</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item">http://127.0.0.1/item</a> 更新,PUT</p>
+<p>​    <a target="_blank" rel="noopener" href="http://127.0.0.1/item/1">http://127.0.0.1/item/1</a> 删除,DELETE</p>
+<p><strong>测试：</strong></p>
+<ol>
+<li>新建一个类 RestFulController</li>
+</ol>
+<p>在Spring MVC中可以使用  @PathVariable 注解，让方法参数的值对应绑定到一个URI模板变量上。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
+
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Controller;
+<span class="hljs-keyword">import</span> org.springframework.ui.Model;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.PathVariable;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;
+<span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RestFulController</span> </span>&#123;
+    <span class="hljs-comment">//映射访问路径</span>
+    <span class="hljs-meta">@RequestMapping(&quot;/commit/&#123;p1&#125;/&#123;p2&#125;&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">index</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> <span class="hljs-keyword">int</span> p1, <span class="hljs-meta">@PathVariable</span> <span class="hljs-keyword">int</span> p2, Model model)</span></span>&#123;
+
+        <span class="hljs-keyword">int</span> result = p1+p2;
+        <span class="hljs-comment">//Spring MVC会自动实例化一个Model对象用于向视图中传值</span>
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>, <span class="hljs-string">&quot;结果：&quot;</span>+result);
+        <span class="hljs-comment">//返回视图位置</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+
+    &#125;
+&#125;</code></pre>
+
+<ol start="2">
+<li>配置Tomcat，测试运行！</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201214145652051.png" srcset="/img/loading.gif" alt="image-20201214145652051"></p>
+<p><strong>使用路径变量的好处是什么呢？</strong></p>
+<ul>
+<li>使路径变得更加简洁；</li>
+<li>获得参数更加方便，框架会自动进行类型转换。</li>
+<li>通过路径变量的类型可以约束访问参数，如果类型不一样，则访问不到对应的请求方法，如这里访问是的路径是/commit/1/a，则路径与方法不匹配，而不会是参数转换失败。</li>
+</ul>
+<p><img src="/images/SpringMVC/image-20201214145813382.png" srcset="/img/loading.gif" alt="image-20201214145813382"></p>
+<p><strong>使用method属性指定请求类型</strong></p>
+<p>用于约束请求的类型，可以收窄请求范围。指定请求谓词的类型如GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE等</p>
+<p><strong>测试：</strong></p>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RestFulController</span> </span>&#123;
+    <span class="hljs-comment">//映射访问路径</span>
+    <span class="hljs-meta">@RequestMapping(value = &quot;/commit/&#123;p1&#125;/&#123;p2&#125;&quot;, method = &#123;RequestMethod.POST&#125;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">index</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> <span class="hljs-keyword">int</span> p1, <span class="hljs-meta">@PathVariable</span> <span class="hljs-keyword">int</span> p2, Model model)</span></span>&#123;
+
+        <span class="hljs-keyword">int</span> result = p1+p2;
+        <span class="hljs-comment">//Spring MVC会自动实例化一个Model对象用于向视图中传值</span>
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>, <span class="hljs-string">&quot;结果：&quot;</span>+result);
+        <span class="hljs-comment">//返回视图位置</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+
+    &#125;
+&#125;</code></pre>
+
+<p>我们使用浏览器地址栏进行访问默认是Get请求，会报错405：</p>
+<p><img src="/images/SpringMVC/image-20201214150344806.png" srcset="/img/loading.gif" alt="image-20201214150344806"></p>
+<p>如果将POST修改为GET则正常了；</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RestFulController</span> </span>&#123;
+    <span class="hljs-comment">//映射访问路径</span>
+    <span class="hljs-meta">@RequestMapping(value = &quot;/commit/&#123;p1&#125;/&#123;p2&#125;&quot;, method = &#123;RequestMethod.GET&#125;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">index</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> <span class="hljs-keyword">int</span> p1, <span class="hljs-meta">@PathVariable</span> <span class="hljs-keyword">int</span> p2, Model model)</span></span>&#123;
+
+        <span class="hljs-keyword">int</span> result = p1+p2;
+        <span class="hljs-comment">//Spring MVC会自动实例化一个Model对象用于向视图中传值</span>
+        model.addAttribute(<span class="hljs-string">&quot;msg&quot;</span>, <span class="hljs-string">&quot;结果：&quot;</span>+result);
+        <span class="hljs-comment">//返回视图位置</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello&quot;</span>;
+
+    &#125;
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201214150437305.png" srcset="/img/loading.gif" alt="image-20201214150437305"></p>
+<p><strong>小结：</strong></p>
+<p>Spring MVC 的 @RequestMapping 注解能够处理 HTTP 请求的方法, 比如 GET, PUT, POST, DELETE 以及 PATCH。</p>
+<p>==<strong>所有的地址栏请求默认都会是 HTTP GET 类型的。</strong>==</p>
+<p>方法级别的注解变体有如下几个：组合注解</p>
+<pre><code class="hljs java"><span class="hljs-meta">@GetMapping</span>
+<span class="hljs-meta">@PostMapping</span>
+<span class="hljs-meta">@PutMapping</span>
+<span class="hljs-meta">@DeleteMapping</span>
+<span class="hljs-meta">@PatchMapping</span></code></pre>
+
+<p><strong>@GetMapping 是一个组合注解，平时使用的会比较多！</strong></p>
+<p><strong>它所扮演的是 @RequestMapping(method =RequestMethod.GET) 的一个快捷方式。</strong></p>
+<p>//to be continued</p>
 
             </div>
             <hr>
