@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      9.1k 字
+      13.4k 字
     </span>
   
 
@@ -240,7 +240,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：a few seconds ago
+                  本文最后更新于：3 minutes ago
                 
               </p>
             
@@ -1377,6 +1377,7 @@ $&#123;msg&#125;
 <ol>
 <li>修改tomcat配置文件 ：设置编码！</li>
 </ol>
+<p>-Dfile.encoding=UTF-8</p>
 <p><img src="/images/SpringMVC/image-20201214173105422.png" srcset="/img/loading.gif" alt="image-20201214173105422"></p>
 <p>如果只是设置Tomcat编码，页面跳转时，还是会出现乱码。<strong>最好定义下面的自定义过滤器。</strong></p>
 <ol start="2">
@@ -1507,11 +1508,11 @@ $&#123;msg&#125;
 
 <p><img src="/images/SpringMVC/image-20201214173315307.png" srcset="/img/loading.gif" alt="image-20201214173315307"></p>
 <p><strong>乱码问题，需要平时多注意，在尽可能能设置编码的地方，都设置为统一编码 UTF-8！</strong></p>
-<h2 id="6-整合SSM框架"><a href="#6-整合SSM框架" class="headerlink" title="6 整合SSM框架"></a>6 整合SSM框架</h2><p>依赖：junit 数据库驱动 连接池 servlet jsp mybatis spring-mybatis spring-webmvc spring-jdbc lombok aop</p>
+<h2 id="6-整合SSM框架"><a href="#6-整合SSM框架" class="headerlink" title="6 整合SSM框架"></a>6 整合SSM框架</h2><h3 id="6-1-大致过程"><a href="#6-1-大致过程" class="headerlink" title="6.1 大致过程"></a>6.1 大致过程</h3><p>依赖：junit 数据库驱动 连接池 servlet jsp mybatis spring-mybatis spring-webmvc spring-jdbc lombok aop</p>
 <ol>
 <li><p>准备好数据库环境</p>
 </li>
-<li><p>基本环境的搭建:导包、添加web支持</p>
+<li><p>基本环境的搭建:导包、添加web支持、添加maven的资源过滤</p>
 </li>
 <li><p>创建项目的基本结构 </p>
 <ul>
@@ -1563,7 +1564,7 @@ $&#123;msg&#125;
 <ol>
 <li>扫描service相关的bean  com.wen.service 注解代替：@Service</li>
 <li>实现类serviceImpl注入到IOC容器中 注解代替：@Autowired</li>
-<li>配置事务管理器，注入数据库连接池</li>
+<li>配置事务管理器-&gt;注入数据库连接池</li>
 </ol>
 </li>
 </ul>
@@ -1595,6 +1596,724 @@ $&#123;msg&#125;
 <li><p>视图层的编写</p>
 </li>
 <li><p>配置Tomcat，测试运行</p>
+</li>
+</ol>
+<h3 id="6-2-搭建的具体过程"><a href="#6-2-搭建的具体过程" class="headerlink" title="6.2 搭建的具体过程"></a>6.2 搭建的具体过程</h3><ol>
+<li>准备好数据库环境</li>
+</ol>
+<p>创建表：</p>
+<pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">DATABASE</span> <span class="hljs-string">`ssmbuild`</span>;
+
+<span class="hljs-keyword">USE</span> <span class="hljs-string">`ssmbuild`</span>;
+
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">IF</span> <span class="hljs-keyword">EXISTS</span> <span class="hljs-string">`books`</span>;
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`books`</span> (
+<span class="hljs-string">`bookID`</span> <span class="hljs-built_in">INT</span>(<span class="hljs-number">10</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> AUTO_INCREMENT <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">&#x27;书id&#x27;</span>,
+<span class="hljs-string">`bookName`</span> <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">&#x27;书名&#x27;</span>,
+<span class="hljs-string">`bookCounts`</span> <span class="hljs-built_in">INT</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">&#x27;数量&#x27;</span>,
+<span class="hljs-string">`detail`</span> <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">200</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span> <span class="hljs-keyword">COMMENT</span> <span class="hljs-string">&#x27;描述&#x27;</span>,
+<span class="hljs-keyword">KEY</span> <span class="hljs-string">`bookID`</span> (<span class="hljs-string">`bookID`</span>)
+) <span class="hljs-keyword">ENGINE</span>=<span class="hljs-keyword">INNODB</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">CHARSET</span>=utf8
+
+<span class="hljs-keyword">INSERT</span>  <span class="hljs-keyword">INTO</span> <span class="hljs-string">`books`</span>(<span class="hljs-string">`bookID`</span>,<span class="hljs-string">`bookName`</span>,<span class="hljs-string">`bookCounts`</span>,<span class="hljs-string">`detail`</span>)<span class="hljs-keyword">VALUES</span> 
+(<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;Java&#x27;</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;从入门到放弃&#x27;</span>),
+(<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;MySQL&#x27;</span>,<span class="hljs-number">10</span>,<span class="hljs-string">&#x27;从删库到跑路&#x27;</span>),
+(<span class="hljs-number">3</span>,<span class="hljs-string">&#x27;Linux&#x27;</span>,<span class="hljs-number">5</span>,<span class="hljs-string">&#x27;从进门到进牢&#x27;</span>);</code></pre>
+
+<ol start="2">
+<li>导入依赖（pom.xml）</li>
+</ol>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--Junit--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>junit<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.12<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--数据库驱动--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>8.0.15<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 数据库连接池 注意版本一定要匹配--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.mchange<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>c3p0<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>0.9.5.5<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.mchange<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mchange-commons-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>0.2.19<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--Servlet - JSP --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>javax.servlet<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>servlet-api<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.5<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>javax.servlet.jsp<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jsp-api<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>javax.servlet<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jstl<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--Mybatis--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.mybatis<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mybatis<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.5.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.mybatis<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mybatis-spring<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--Spring--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-webmvc<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>5.3.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-jdbc<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>5.0.7.RELEASE<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><span class="hljs-comment">&lt;!--之前导入不进去，有可能是因为版本太高了吧--&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.projectlombok<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lombok<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.18.12<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span></code></pre>
+
+<p>注意有时会出现包已经添加，但是却显示不存在，解决方法是：创建lib文件夹，并且将所有的包导进去！</p>
+<p><img src="/images/SpringMVC/image-20201215224329627.png" srcset="/img/loading.gif" alt="image-20201215224329627"></p>
+<ol start="3">
+<li>添加web支持</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201215222031121.png" srcset="/img/loading.gif" alt="image-20201215222031121"></p>
+<ol start="3">
+<li>添加maven资源过滤(pom.xml)</li>
+</ol>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">includes</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.properties<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.xml<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">includes</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">filtering</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">filtering</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/resources<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">includes</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.properties<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.xml<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">includes</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">filtering</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">filtering</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span></code></pre>
+
+<ol start="4">
+<li>创建项目的基本结构</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201215222303156.png" srcset="/img/loading.gif" alt="image-20201215222303156"></p>
+<ol start="5">
+<li><p>mybatis层的编写</p>
+<ul>
+<li>database.properties(最好加上前缀，不然name username这种有可能报错)</li>
+</ul>
+<pre><code class="hljs properties"><span class="hljs-meta">jdbc.driver</span>=<span class="hljs-string">com.mysql.cj.jdbc.Driver</span>
+<span class="hljs-meta">jdbc.url</span>=<span class="hljs-string">jdbc:mysql://localhost:3306/ssmbuild?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true</span>
+<span class="hljs-meta">jdbc.username</span>=<span class="hljs-string">root</span>
+<span class="hljs-meta">jdbc.password</span>=<span class="hljs-string">645645aa</span></code></pre>
+
+<ul>
+<li>IDEA关联数据库</li>
+</ul>
+<p><img src="/images/SpringMVC/image-20201215222441903.png" srcset="/img/loading.gif" alt="image-20201215222441903"></p>
+<ul>
+<li>编写mybatis-config.xml(mybatis核心配置文件)  一般只写pojo包的别名和扫描包</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">configuration</span></span>
+<span class="hljs-meta">        <span class="hljs-meta-keyword">PUBLIC</span> <span class="hljs-meta-string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span>
+<span class="hljs-meta">        <span class="hljs-meta-string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">typeAliases</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">package</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;com.wen.pojo&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">typeAliases</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">mappers</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">mapper</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">&quot;com/wen/mapper/BookMapper.xml&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">mappers</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span></code></pre>
+
+<ul>
+<li>编写pojo 使用lombok插件</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.pojo;
+
+<span class="hljs-keyword">import</span> lombok.AllArgsConstructor;
+<span class="hljs-keyword">import</span> lombok.Data;
+<span class="hljs-keyword">import</span> lombok.NoArgsConstructor;
+
+<span class="hljs-meta">@Data</span>
+<span class="hljs-meta">@AllArgsConstructor</span>
+<span class="hljs-meta">@NoArgsConstructor</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Books</span> </span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> bookID;
+    <span class="hljs-keyword">private</span> String bookName;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> bookCounts;
+    <span class="hljs-keyword">private</span> String detail;
+&#125;</code></pre>
+
+<ul>
+<li>编写mapper接口</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.mapper;
+
+<span class="hljs-keyword">import</span> com.wen.pojo.Books;
+
+<span class="hljs-keyword">import</span> java.util.List;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">BookMapper</span> </span>&#123;
+    <span class="hljs-comment">//增加一个Book</span>
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">addBook</span><span class="hljs-params">(Books book)</span></span>;
+
+    <span class="hljs-comment">//根据id删除一个Book</span>
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">deleteBookById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>;
+
+    <span class="hljs-comment">//更新Book</span>
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateBook</span><span class="hljs-params">(Books books)</span></span>;
+
+    <span class="hljs-comment">//根据id查询,返回一个Book</span>
+    <span class="hljs-function">Books <span class="hljs-title">queryBookById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>;
+
+    <span class="hljs-comment">//查询全部Book,返回list集合</span>
+    <span class="hljs-function">List&lt;Books&gt; <span class="hljs-title">queryAllBook</span><span class="hljs-params">()</span></span>;
+&#125;</code></pre>
+
+<ul>
+<li>编写mapper.xml(存放在resources中)</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>
+<span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">mapper</span></span>
+<span class="hljs-meta">        <span class="hljs-meta-keyword">PUBLIC</span> <span class="hljs-meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span>
+<span class="hljs-meta">        <span class="hljs-meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">mapper</span> <span class="hljs-attr">namespace</span>=<span class="hljs-string">&quot;com.wen.mapper.BookMapper&quot;</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--增加一个Book--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">insert</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;addBook&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;Books&quot;</span>&gt;</span>
+      insert into books(bookName,bookCounts,detail)
+      values (#&#123;bookName&#125;, #&#123;bookCounts&#125;, #&#123;detail&#125;)
+   <span class="hljs-tag">&lt;/<span class="hljs-name">insert</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--根据id删除一个Book--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">delete</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;deleteBookById&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;int&quot;</span>&gt;</span>
+      delete from books where bookID=#&#123;bookID&#125;
+   <span class="hljs-tag">&lt;/<span class="hljs-name">delete</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--更新Book--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">update</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;updateBook&quot;</span> <span class="hljs-attr">parameterType</span>=<span class="hljs-string">&quot;Books&quot;</span>&gt;</span>
+      update books
+      set bookName = #&#123;bookName&#125;,bookCounts = #&#123;bookCounts&#125;,detail = #&#123;detail&#125;
+      where bookID = #&#123;bookID&#125;
+   <span class="hljs-tag">&lt;/<span class="hljs-name">update</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--根据id查询,返回一个Book--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;queryBookById&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;Books&quot;</span>&gt;</span>
+      select * from books
+      where bookID = #&#123;bookID&#125;
+   <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--查询全部Book--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;queryAllBook&quot;</span> <span class="hljs-attr">resultType</span>=<span class="hljs-string">&quot;Books&quot;</span>&gt;</span>
+      SELECT * from books
+   <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">mapper</span>&gt;</span></code></pre>
+
+<p><img src="/images/SpringMVC/image-20201215222718071.png" srcset="/img/loading.gif" alt="image-20201215222718071"></p>
+</li>
+<li><p>service层的编写</p>
+</li>
+</ol>
+<p>编写service接口 以及实现类</p>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.service;
+
+<span class="hljs-keyword">import</span> com.wen.pojo.Books;
+
+<span class="hljs-keyword">import</span> java.util.List;
+
+<span class="hljs-comment">//BookService:底下需要去实现,调用mapper层</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">BookService</span> </span>&#123;
+    <span class="hljs-comment">//增加一个Book</span>
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">addBook</span><span class="hljs-params">(Books book)</span></span>;
+    <span class="hljs-comment">//根据id删除一个Book</span>
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">deleteBookById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>;
+    <span class="hljs-comment">//更新Book</span>
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">updateBook</span><span class="hljs-params">(Books books)</span></span>;
+    <span class="hljs-comment">//根据id查询,返回一个Book</span>
+    <span class="hljs-function">Books <span class="hljs-title">queryBookById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span></span>;
+    <span class="hljs-comment">//查询全部Book,返回list集合</span>
+    <span class="hljs-function">List&lt;Books&gt; <span class="hljs-title">queryAllBook</span><span class="hljs-params">()</span></span>;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.service;
+
+<span class="hljs-keyword">import</span> com.wen.mapper.BookMapper;
+<span class="hljs-keyword">import</span> com.wen.pojo.Books;
+
+<span class="hljs-keyword">import</span> java.util.List;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BookServiceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">BookService</span> </span>&#123;
+    <span class="hljs-comment">//调用mapper层的操作，设置一个set接口，方便Spring管理</span>
+    <span class="hljs-keyword">private</span> BookMapper bookMapper;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setBookMapper</span><span class="hljs-params">(BookMapper bookMapper)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.bookMapper = bookMapper;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">addBook</span><span class="hljs-params">(Books book)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> bookMapper.addBook(book);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">deleteBookById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> bookMapper.deleteBookById(id);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">updateBook</span><span class="hljs-params">(Books books)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> bookMapper.updateBook(books);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Books <span class="hljs-title">queryBookById</span><span class="hljs-params">(<span class="hljs-keyword">int</span> id)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> bookMapper.queryBookById(id);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Books&gt; <span class="hljs-title">queryAllBook</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> bookMapper.queryAllBook();
+    &#125;
+&#125;</code></pre>
+
+<p><img src="/images/SpringMVC/image-20201215222827376.png" srcset="/img/loading.gif" alt="image-20201215222827376"></p>
+<ol start="7">
+<li><p>spring层</p>
+<ul>
+<li>整合mybatis spring-mapper.xml</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:context</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/context&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span>
+<span class="hljs-tag"><span class="hljs-string">       http://www.springframework.org/schema/beans/spring-beans.xsd</span></span>
+<span class="hljs-tag"><span class="hljs-string">       http://www.springframework.org/schema/context</span></span>
+<span class="hljs-tag"><span class="hljs-string">       https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--1. 关联数据库文件--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">context:property-placeholder</span> <span class="hljs-attr">location</span>=<span class="hljs-string">&quot;classpath:database.properties&quot;</span>/&gt;</span>
+    <span class="hljs-comment">&lt;!--2. 数据库连接池--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;dataSource&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.mchange.v2.c3p0.ComboPooledDataSource&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;driverClass&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;jdbcUrl&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;user&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;password&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span>
+
+        <span class="hljs-comment">&lt;!-- c3p0连接池的私有属性 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;maxPoolSize&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;30&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;minPoolSize&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;10&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 关闭连接后不自动commit --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;autoCommitOnClose&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;false&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 获取连接超时时间 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;checkoutTimeout&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;10000&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 当获取连接失败重试次数 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;acquireRetryAttempts&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;2&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--3. 配置SqlSessionFactory对象--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;sqlSessionFactory&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;</span>&gt;</span>
+        <span class="hljs-comment">&lt;!-- 注入数据库连接池 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;dataSource&quot;</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;dataSource&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 配置MyBaties全局配置文件:mybatis-config.xml --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;configLocation&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;classpath:mybatis-config.xml&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--4.配置扫描Dao接口包，动态实现Dao接口注入到spring容器中--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;</span>&gt;</span>
+        <span class="hljs-comment">&lt;!-- 注入sqlSessionFactory 这里注入用的是value 不是ref--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;sqlSessionFactoryBeanName&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;sqlSessionFactory&quot;</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 给出需要扫描mapper接口包 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;basePackage&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;com.wen.mapper&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
+
+<ul>
+<li>整合service   spring-service.xml</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:context</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/context&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span>
+<span class="hljs-tag"><span class="hljs-string">       http://www.springframework.org/schema/beans/spring-beans.xsd</span></span>
+<span class="hljs-tag"><span class="hljs-string">       http://www.springframework.org/schema/context</span></span>
+<span class="hljs-tag"><span class="hljs-string">       https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- 1. 扫描service相关的bean --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">context:component-scan</span> <span class="hljs-attr">base-package</span>=<span class="hljs-string">&quot;com.wen.service&quot;</span>/&gt;</span>
+
+    <span class="hljs-comment">&lt;!--2. BookServiceImpl注入到IOC容器中--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;BookServiceImpl&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;com.wen.service.BookServiceImpl&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;bookMapper&quot;</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;bookMapper&quot;</span>/&gt;</span><span class="hljs-comment">&lt;!--文件必须在一个applicationContext下--&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--3. 配置事务管理器-&gt;注入数据库连接池--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;transactionManager&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;dataSource&quot;</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&quot;dataSource&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
+</li>
+<li><p>springMVC层</p>
+<ul>
+<li>web.xml</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">web-app</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">version</span>=<span class="hljs-string">&quot;4.0&quot;</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--DispatcherServlet--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">servlet</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">servlet-name</span>&gt;</span>DispatcherServlet<span class="hljs-tag">&lt;/<span class="hljs-name">servlet-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="hljs-tag">&lt;/<span class="hljs-name">servlet-class</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">init-param</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-name</span>&gt;</span>contextConfigLocation<span class="hljs-tag">&lt;/<span class="hljs-name">param-name</span>&gt;</span>
+            <span class="hljs-comment">&lt;!--一定要注意:我们这里加载的是总的配置文件，之前被这里坑了！--&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-value</span>&gt;</span>classpath:applicationContext.xml<span class="hljs-tag">&lt;/<span class="hljs-name">param-value</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">init-param</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">servlet</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">servlet-mapping</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">servlet-name</span>&gt;</span>DispatcherServlet<span class="hljs-tag">&lt;/<span class="hljs-name">servlet-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">servlet-mapping</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--乱码--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">filter</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-class</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">init-param</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">param-name</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-value</span>&gt;</span>UTF-8<span class="hljs-tag">&lt;/<span class="hljs-name">param-value</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">init-param</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">filter-mapping</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/*<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">filter-mapping</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--Session过期时间--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">session-config</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">session-timeout</span>&gt;</span>15<span class="hljs-tag">&lt;/<span class="hljs-name">session-timeout</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">session-config</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">web-app</span>&gt;</span></code></pre>
+
+<ul>
+<li>spring-mvc.xml</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:context</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/context&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:mvc</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/mvc&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/beans/spring-beans.xsd</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/context</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/context/spring-context.xsd</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/mvc</span></span>
+<span class="hljs-tag"><span class="hljs-string">   https://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;</span>&gt;</span>
+
+    <span class="hljs-comment">&lt;!--1. 开启SpringMVC注解驱动 @Controller @RequestMapping--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">mvc:annotation-driven</span>/&gt;</span>
+    <span class="hljs-comment">&lt;!-- 2.静态资源默认servlet配置--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">mvc:default-servlet-handler</span>/&gt;</span>
+    <span class="hljs-comment">&lt;!--3. 配置jsp 显示ViewResolver视图解析器--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;viewClass&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.view.JstlView&quot;</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;prefix&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;/WEB-INF/jsp/&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;suffix&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;.jsp&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--4. 扫描web相关的bean com.wen.controller--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">context:component-scan</span> <span class="hljs-attr">base-package</span>=<span class="hljs-string">&quot;com.wen.controller&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
+
+<ul>
+<li>applicationContext.xml</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span>
+<span class="hljs-tag"><span class="hljs-string">       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">import</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">&quot;spring/spring-mapper.xml&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">import</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">&quot;spring/spring-service.xml&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">import</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">&quot;spring/spring-mvc.xml&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
+
+<p>==需要注意一点，这几个文件必须在一个context下，不然会报错，会出现引用找不到的情况！==</p>
+<p><img src="/images/SpringMVC/image-20201215223355170.png" srcset="/img/loading.gif" alt="image-20201215223355170"></p>
+</li>
+<li><p>controller类的编写</p>
+</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
+
+<span class="hljs-keyword">import</span> com.wen.pojo.Books;
+<span class="hljs-keyword">import</span> com.wen.service.BookService;
+<span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Autowired;
+<span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Qualifier;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Controller;
+<span class="hljs-keyword">import</span> org.springframework.ui.Model;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.PathVariable;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;
+
+<span class="hljs-keyword">import</span> java.util.List;
+
+<span class="hljs-meta">@Controller</span>
+<span class="hljs-meta">@RequestMapping(&quot;/book&quot;)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BookController</span> </span>&#123;
+    <span class="hljs-meta">@Autowired</span>
+    <span class="hljs-meta">@Qualifier(&quot;BookServiceImpl&quot;)</span>
+    <span class="hljs-keyword">private</span> BookService bookService;
+
+    <span class="hljs-meta">@RequestMapping(&quot;/allBook&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">list</span><span class="hljs-params">(Model model)</span> </span>&#123;
+        List&lt;Books&gt; list = bookService.queryAllBook();
+        <span class="hljs-keyword">for</span> (Books books : list) &#123;
+            System.out.println(books.getBookName());
+        &#125;
+        model.addAttribute(<span class="hljs-string">&quot;list&quot;</span>, list);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;allBook&quot;</span>;
+    &#125;
+
+    <span class="hljs-meta">@RequestMapping(&quot;/toAddBook&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toAddPaper</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;addBook&quot;</span>;
+    &#125;
+
+    <span class="hljs-meta">@RequestMapping(&quot;/addBook&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">addPaper</span><span class="hljs-params">(Books books)</span> </span>&#123;
+        System.out.println(books);
+        bookService.addBook(books);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/book/allBook&quot;</span>;
+    &#125;
+
+    <span class="hljs-meta">@RequestMapping(&quot;/toUpdateBook&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">toUpdateBook</span><span class="hljs-params">(Model model, <span class="hljs-keyword">int</span> id)</span> </span>&#123;
+        Books books = bookService.queryBookById(id);
+        System.out.println(books);
+        model.addAttribute(<span class="hljs-string">&quot;book&quot;</span>,books );
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;updateBook&quot;</span>;
+    &#125;
+
+    <span class="hljs-meta">@RequestMapping(&quot;/updateBook&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">updateBook</span><span class="hljs-params">(Model model, Books book)</span> </span>&#123;
+        System.out.println(book);
+        bookService.updateBook(book);
+        Books books = bookService.queryBookById(book.getBookID());
+        model.addAttribute(<span class="hljs-string">&quot;books&quot;</span>, books);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/book/allBook&quot;</span>;
+    &#125;
+    <span class="hljs-meta">@RequestMapping(&quot;/del/&#123;bookId&#125;&quot;)</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">deleteBook</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable(&quot;bookId&quot;)</span> <span class="hljs-keyword">int</span> id)</span> </span>&#123;
+        bookService.deleteBookById(id);
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;redirect:/book/allBook&quot;</span>;
+    &#125;
+&#125;</code></pre>
+
+<ol start="10">
+<li>视图层</li>
+</ol>
+<p>addBook.jsp</p>
+<pre><code class="hljs jsp">&lt;%--
+  Created by IntelliJ IDEA.
+  User: <span class="hljs-number">20964</span>
+  Date: <span class="hljs-number">2020</span>-<span class="hljs-number">12</span>-<span class="hljs-number">15</span>
+  Time: <span class="hljs-number">9</span>:<span class="hljs-number">41</span>
+  To change <span class="hljs-keyword">this</span> template use File | Settings | File Templates.
+--%&gt;
+&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;新增书籍&lt;/title&gt;
+    &lt;meta name=<span class="hljs-string">&quot;viewport&quot;</span> content=<span class="hljs-string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;
+    &lt;!-- 引入 Bootstrap --&gt;
+    &lt;link href=<span class="hljs-string">&quot;https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;</span> rel=<span class="hljs-string">&quot;stylesheet&quot;</span>&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;container&quot;</span>&gt;
+
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;row clearfix&quot;</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-md-12 column&quot;</span>&gt;
+            &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;page-header&quot;</span>&gt;
+                &lt;h1&gt;
+                    &lt;small&gt;新增书籍&lt;/small&gt;
+                &lt;/h1&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;form action=<span class="hljs-string">&quot;$&#123;pageContext.request.contextPath&#125;/book/addBook&quot;</span> method=<span class="hljs-string">&quot;post&quot;</span>&gt;
+        书籍名称：&lt;input type=<span class="hljs-string">&quot;text&quot;</span> name=<span class="hljs-string">&quot;bookName&quot;</span>&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+        书籍数量：&lt;input type=<span class="hljs-string">&quot;text&quot;</span> name=<span class="hljs-string">&quot;bookCounts&quot;</span>&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+        书籍详情：&lt;input type=<span class="hljs-string">&quot;text&quot;</span> name=<span class="hljs-string">&quot;detail&quot;</span>&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+        &lt;input type=<span class="hljs-string">&quot;submit&quot;</span> value=<span class="hljs-string">&quot;添加&quot;</span>&gt;
+    &lt;/form&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>allBook.jsp</p>
+<p>&lt;%@ taglib prefix=”c” uri=”<a target="_blank" rel="noopener" href="http://java.sun.com/jsp/jstl/core&quot;">http://java.sun.com/jsp/jstl/core&quot;</a> %&gt;==这个必须加上，不然不会显示所有的书籍，不能循环显示。==</p>
+<pre><code class="hljs jsp">&lt;%@ taglib prefix=<span class="hljs-string">&quot;c&quot;</span> uri=<span class="hljs-string">&quot;http://java.sun.com/jsp/jstl/core&quot;</span> %&gt;
+&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;书籍列表&lt;/title&gt;
+    &lt;meta name=<span class="hljs-string">&quot;viewport&quot;</span> content=<span class="hljs-string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;
+    &lt;!-- 引入 Bootstrap --&gt;
+    &lt;link href=<span class="hljs-string">&quot;https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;</span> rel=<span class="hljs-string">&quot;stylesheet&quot;</span>&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;container&quot;</span>&gt;
+
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;row clearfix&quot;</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-md-12 column&quot;</span>&gt;
+            &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;page-header&quot;</span>&gt;
+                &lt;h1&gt;
+                    &lt;small&gt;书籍列表 —— 显示所有书籍&lt;/small&gt;
+                &lt;/h1&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;row&quot;</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-md-4 column&quot;</span>&gt;
+            &lt;a class=&quot;btn btn-primary&quot; href=&quot;$&#123;pageContext.request.contextPath&#125;/book/toAddBook&quot;&gt;新增&lt;/a&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;row clearfix&quot;</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-md-12 column&quot;</span>&gt;
+            &lt;table <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;table table-hover table-striped&quot;</span>&gt;
+                &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;书籍编号&lt;/th&gt;
+                    &lt;th&gt;书籍名字&lt;/th&gt;
+                    &lt;th&gt;书籍数量&lt;/th&gt;
+                    &lt;th&gt;书籍详情&lt;/th&gt;
+                    &lt;th&gt;操作&lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;/thead&gt;
+
+                &lt;tbody&gt;
+                &lt;c:forEach <span class="hljs-keyword">var</span>=<span class="hljs-string">&quot;book&quot;</span> items=<span class="hljs-string">&quot;$&#123;requestScope.get(&#x27;list&#x27;)&#125;&quot;</span>&gt;
+                    &lt;tr&gt;
+                        &lt;td&gt;$&#123;book.getBookID()&#125;&lt;/td&gt;
+                        &lt;td&gt;$&#123;book.getBookName()&#125;&lt;/td&gt;
+                        &lt;td&gt;$&#123;book.getBookCounts()&#125;&lt;/td&gt;
+                        &lt;td&gt;$&#123;book.getDetail()&#125;&lt;/td&gt;
+                        &lt;td&gt;
+                            &lt;a href=&quot;$&#123;pageContext.request.contextPath&#125;/book/toUpdateBook?id=$&#123;book.getBookID()&#125;&quot;&gt;更改&lt;/a&gt; |
+                            &lt;a href=&quot;$&#123;pageContext.request.contextPath&#125;/book/del/$&#123;book.getBookID()&#125;&quot;&gt;删除&lt;/a&gt;
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                &lt;/c:forEach&gt;
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    $&#123;list.get(<span class="hljs-number">1</span>)&#125;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>updateBook.jsp</p>
+<pre><code class="hljs jsp">&lt;%--
+  Created by IntelliJ IDEA.
+  User: <span class="hljs-number">20964</span>
+  Date: <span class="hljs-number">2020</span>-<span class="hljs-number">12</span>-<span class="hljs-number">15</span>
+  Time: <span class="hljs-number">9</span>:<span class="hljs-number">42</span>
+  To change <span class="hljs-keyword">this</span> template use File | Settings | File Templates.
+--%&gt;
+&lt;%@ page contentType=<span class="hljs-string">&quot;text/html;charset=UTF-8&quot;</span> language=<span class="hljs-string">&quot;java&quot;</span> %&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;修改信息&lt;/title&gt;
+    &lt;meta name=<span class="hljs-string">&quot;viewport&quot;</span> content=<span class="hljs-string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;
+    &lt;!-- 引入 Bootstrap --&gt;
+    &lt;link href=<span class="hljs-string">&quot;https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;</span> rel=<span class="hljs-string">&quot;stylesheet&quot;</span>&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;container&quot;</span>&gt;
+
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;row clearfix&quot;</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;col-md-12 column&quot;</span>&gt;
+            &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;page-header&quot;</span>&gt;
+                &lt;h1&gt;
+                    &lt;small&gt;修改信息&lt;/small&gt;
+                &lt;/h1&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;form action=<span class="hljs-string">&quot;$&#123;pageContext.request.contextPath&#125;/book/updateBook&quot;</span> method=<span class="hljs-string">&quot;post&quot;</span>&gt;
+        &lt;input type=<span class="hljs-string">&quot;hidden&quot;</span> name=<span class="hljs-string">&quot;bookID&quot;</span> value=<span class="hljs-string">&quot;$&#123;book.getBookID()&#125;&quot;</span>/&gt;
+        书籍名称：&lt;input type=<span class="hljs-string">&quot;text&quot;</span> name=<span class="hljs-string">&quot;bookName&quot;</span> value=<span class="hljs-string">&quot;$&#123;book.getBookName()&#125;&quot;</span>/&gt;
+        书籍数量：&lt;input type=<span class="hljs-string">&quot;text&quot;</span> name=<span class="hljs-string">&quot;bookCounts&quot;</span> value=<span class="hljs-string">&quot;$&#123;book.getBookCounts()&#125;&quot;</span>/&gt;
+        书籍详情：&lt;input type=<span class="hljs-string">&quot;text&quot;</span> name=<span class="hljs-string">&quot;detail&quot;</span> value=<span class="hljs-string">&quot;$&#123;book.getDetail() &#125;&quot;</span>/&gt;
+        &lt;input type=<span class="hljs-string">&quot;submit&quot;</span> value=<span class="hljs-string">&quot;提交&quot;</span>/&gt;
+    &lt;/form&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<ol start="11">
+<li>配置Tomcat，测试运行</li>
+</ol>
+<p><img src="/images/SpringMVC/image-20201215223809342.png" srcset="/img/loading.gif" alt="image-20201215223809342"></p>
+<p><img src="/images/SpringMVC/image-20201215223846170.png" srcset="/img/loading.gif" alt="image-20201215223846170"></p>
+<p><img src="/images/SpringMVC/image-20201215223901515.png" srcset="/img/loading.gif" alt="image-20201215223901515"></p>
+<p><img src="/images/SpringMVC/image-20201215223952388.png" srcset="/img/loading.gif" alt="image-20201215223952388"></p>
+<p>所有逻辑经过测试都能够正常运行！！</p>
+<img src="/images/SpringMVC/image-20201215224045736.png" srcset="/img/loading.gif" alt="image-20201215224045736" style="zoom:50%;" />
+
+
+
+<h3 id="6-3-遇到的问题"><a href="#6-3-遇到的问题" class="headerlink" title="6.3 遇到的问题"></a>6.3 遇到的问题</h3><ol>
+<li><p>java.sql.SQLExce1ption: Access denied for user ‘20964’@’localhost’ (using password: YES). </p>
+<p>查看database.properties中的数据库名称有没有错误以及username最好不要单独写，最好写jdbc.username</p>
+</li>
+<li><p>java.lang.AbstractMethodError: Method com/mchange/v2/c3p0/impl/NewProxyResultSet.isClosed()Z is abstract</p>
+<ul>
+<li>com.mchange-c3p0 和 mchange-commons-java两个的依赖都必须导入</li>
+<li>自行百度版本兼容问题，如果之前版本不对，一定要clean一下，并且检查<strong>lib文件夹中的jar是否正确！！</strong>！</li>
+</ul>
 </li>
 </ol>
 <p>//to be continued</p>
