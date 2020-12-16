@@ -17,7 +17,7 @@
   <meta name="description" content="梦想很珍贵，努力特别酷。-xback">
   <meta name="author" content="Crazyrw">
   <meta name="keywords" content="">
-  <title>Archives - Crazyrw&#39;s blog</title>
+  <title>Crazyrw&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
 
@@ -47,7 +47,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 65vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -141,12 +141,12 @@
 </nav>
 
     <div class="banner intro-2" id="background" parallax=true
-         style="background: url('/img/default.png') no-repeat center center;
+         style="background: url('/images/bg/post.webp') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Archive">
+            <span class="h2" id="subtitle" title="Welcome to Crazyrw's Blog.">
               
             </span>
 
@@ -183,47 +183,55 @@
               <div class="col-12 col-md-10 m-auto">
                 
 
-<div class="list-group">
-  <p class="h4">11 posts in total.</p>
-  <hr>
-  
-  
+
+  <div class="row mx-auto index-card">
     
-      
-      <p class="h5">2020</p>
     
-    <a href="/2020/12/16/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">idea上传项目到github</span>
-      <time style="float: right;">12-16</time>
-    </a>
-  
-    
-    <a href="/2020/12/11/IDEA%20Tomcat%E6%8A%A5%E9%94%99/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">IDEA Tomcat报错</span>
-      <time style="float: right;">12-11</time>
-    </a>
-  
-    
-    <a href="/2020/12/11/%E8%A7%A3%E5%86%B3idea%20maven%E9%A1%B9%E7%9B%AE%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6%E4%B8%AD%E6%B2%A1%E6%9C%89JSP%E6%96%87%E4%BB%B6/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">解决idea maven中新建文件没有JSP选项</span>
-      <time style="float: right;">12-11</time>
-    </a>
-  
-    
-    <a href="/2020/12/11/SpringMVC/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">SpringMVC（持续更新中）</span>
-      <time style="float: right;">12-11</time>
-    </a>
-  
-    
-    <a href="/2020/12/08/Typora%E6%95%B0%E5%AD%A6%E7%AC%A6%E5%8F%B7/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Typora数学符号大全</span>
-      <time style="float: right;">12-08</time>
-    </a>
-  
-</div>
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/11/27/hello-world/">Hello World</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/11/27/hello-world/">
+          
+          
+            
+          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-11-27 19:21" pubdate>
+              2020-11-27
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
 
 
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </span>
+  </nav>
+  
+  <script>
+    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
+      ele.href += '#board';
+    }
+  </script>
 
 
 
@@ -358,7 +366,34 @@
       var typing = Fluid.plugins.typing;
       var title = document.getElementById('subtitle').title;
       
-      typing(title)
+      $.ajax({
+        type: 'POST',
+        url: 'https://api.eatrice.top/GetAll/',
+        headers: {},
+        dataType: 'json',
+        success: function (result) {
+          var text;
+          if (result) {
+            var keys = 'Content'.split('.')
+            if (result instanceof Array) {
+              result = result[0]
+            }
+            for (const k of keys) {
+              var value = result[k]
+              if (typeof value === 'string') {
+                text = value
+                break
+              } else if (value instanceof Object) {
+                result = value
+              }
+            }
+          }
+          text ? typing(text) : typing(title);
+        },
+        error: function () {
+          typing(title)
+        }
+      })
       
     })(window, document);
   </script>

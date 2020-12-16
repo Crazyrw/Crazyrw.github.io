@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>idea上传项目到github</title>
+    <link href="/2020/12/16/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/"/>
+    <url>/2020/12/16/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/</url>
+    
+    <content type="html"><![CDATA[<ol><li>安装git, 在IDEA中设置Git，在File–&gt;Setting-&gt;Version Control–&gt;Git–&gt;Path to Git executable选择你的git安装后的git.exe文件。</li></ol><p><img src="/images/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/image-20201216153123868.png" alt="image-20201216153123868"></p><ol start="2"><li>创建本地仓库</li></ol><p><img src="/images/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/image-20201216153156728.png" alt="image-20201216153156728"></p><ol start="3"><li>上传项目到本地仓库，项目右键选择Git–&gt;add，此时项目文件变成绿色，此时文件只是处于暂存区，并没有真正进入到版本库中：</li></ol><p><img src="/images/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/image-20201216153232590.png" alt="image-20201216153232590"></p><ol start="4"><li>右击工程文件 -&gt;git-&gt;commit,提交到本地git。至此，本地git已commit完毕，此时项目文件从暂存区真正进入版本库中，项目文件变成白色：</li></ol><p><img src="/images/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/image-20201216153349861.png" alt="image-20201216153349861"></p><ol start="5"><li>上传项目到GitHub中，VCS–&gt;Import into Version Control–&gt;Share Project on GitHub，在弹框中输入仓库名和描述，点击Share，即可是上传，中间会弹窗输入GitHub的用户名和密码（已输入过用户名和密码并记住的不会再次弹框输入），上传成功后IDEA右下角会给出提示：</li></ol><p><img src="/images/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/image-20201216153429666.png" alt="image-20201216153429666"></p><p><img src="/images/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/image-20201216153509983.png" alt="image-20201216153509983"></p><p>填写新建github仓库的名称，填写描述信息，点击share即可。</p><ol start="6"><li>上传成功</li></ol><p><img src="/images/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/image-20201216153607402.png" alt="image-20201216153607402"></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>IDEA Tomcat报错</title>
     <link href="/2020/12/11/IDEA%20Tomcat%E6%8A%A5%E9%94%99/"/>
     <url>/2020/12/11/IDEA%20Tomcat%E6%8A%A5%E9%94%99/</url>
