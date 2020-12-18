@@ -1,0 +1,952 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="梦想很珍贵，努力特别酷。-xback">
+  <meta name="author" content="Crazyrw">
+  <meta name="keywords" content="">
+  <title>Json交互处理 - Crazyrw&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"7d2fd3d56f2287a0bda354d214258de6","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Crazyrw's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/images/bg/post.webp') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Json交互处理">
+              
+            </span>
+
+            <p class="h2"><a id="rainbow" href=''>🌈 获取中...</a></p>
+            <script>
+              fetch('https://api.eatrice.top')
+                .then(response => response.json())
+                .then(data => {
+                  var rainbow = document.getElementById('rainbow');
+                  rainbow.innerHTML = data.Content;
+                  rainbow.href = "https://rainbow.eatrice.top/?ID=" + data.ID;
+                })
+                .catch(console.error)
+              </script>
+
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-17 20:16" pubdate>
+        December 17, 2020 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.4k 字
+    </span>
+  
+
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Json交互处理</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：a few seconds ago
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>该项目所在的地址：<a target="_blank" rel="noopener" href="https://github.com/Crazyrw/SpringMVC">https://github.com/Crazyrw/SpringMVC</a> 其中的springmvc-05-json子模块。</p>
+<h2 id="1-什么是JSON"><a href="#1-什么是JSON" class="headerlink" title="1. 什么是JSON"></a>1. 什么是JSON</h2><ul>
+<li><p>JSON(JavaScript Object Notation, JS 对象标记) 是一种轻量级的数据交换格式，目前使用特别广泛。</p>
+</li>
+<li><p>它采用完全独立于编程语言的文本格式来存储和表示数据。</p>
+</li>
+<li><p>简洁和清晰的层次结构使得 JSON 成为理想的数据交换语言。</p>
+</li>
+<li><p>易于人阅读和编写，同时也易于机器解析和生成，并有效地提升网络传输效率。</p>
+</li>
+</ul>
+<p>在 JavaScript 语言中，一切都是对象。因此，任何JavaScript 支持的类型都可以通过 JSON 来表示，例如字符串、数字、对象、数组等。看看他的要求和语法格式：</p>
+<ul>
+<li>对象表示为键值对，数据由逗号分隔</li>
+<li>花括号保存对象</li>
+<li>方括号保存数组</li>
+</ul>
+<p><strong>JSON 键值对</strong>是用来保存 JavaScript 对象的一种方式，和 JavaScript 对象的写法也大同小异，键/值对组合中的<strong>键名写在前面并用双引号 “” 包裹</strong>，使用冒号 : 分隔，然后紧接着值：</p>
+<pre><code class="hljs json">&#123;<span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;QinJiang&quot;</span>&#125;
+&#123;<span class="hljs-attr">&quot;age&quot;</span>: <span class="hljs-string">&quot;3&quot;</span>&#125;
+&#123;<span class="hljs-attr">&quot;sex&quot;</span>: <span class="hljs-string">&quot;男&quot;</span>&#125;</code></pre>
+
+<p>很多人搞不清楚 JSON 和 JavaScript 对象的关系，甚至连谁是谁都不清楚。其实，可以这么理解：</p>
+<p>JSON 是 JavaScript 对象的字符串表示法，它使用文本表示一个 JS 对象的信息，本质是一个字符串。</p>
+<pre><code class="hljs json">var obj = &#123;a: &#x27;Hello&#x27;, b: &#x27;World&#x27;&#125;; 
+<span class="hljs-comment">//这是一个对象，注意键名也是可以使用引号包裹的</span>
+var json = &#x27;&#123;&quot;a&quot;: &quot;Hello&quot;, &quot;b&quot;: &quot;World&quot;&#125;&#x27;; 
+<span class="hljs-comment">//这是一个 JSON 字符串，本质是一个字符串</span></code></pre>
+
+<p><strong>JSON和JavaScript对象互转</strong></p>
+<ul>
+<li>要实现从JSON字符串转换为JavaScript 对象，使用 JSON.parse() 方法：</li>
+</ul>
+<pre><code class="hljs q"><span class="hljs-built_in">var</span> obj = JSON.<span class="hljs-built_in">parse</span>(&#x27;&#123;<span class="hljs-string">&quot;a&quot;</span>: <span class="hljs-string">&quot;Hello&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>: <span class="hljs-string">&quot;World&quot;</span>&#125;&#x27;);
+<span class="hljs-comment">//结果是 &#123;a: &#x27;Hello&#x27;, b: &#x27;World&#x27;&#125;</span></code></pre>
+
+<ul>
+<li>要实现从JavaScript 对象转换为JSON字符串，使用 JSON.stringify() 方法：</li>
+</ul>
+<pre><code class="hljs ada">var json = JSON.stringify(&#123;a: <span class="hljs-symbol">&#x27;Hello</span>&#x27;, b: <span class="hljs-symbol">&#x27;World</span>&#x27;&#125;);
+//结果是 &#x27;&#123;<span class="hljs-string">&quot;a&quot;</span>: <span class="hljs-string">&quot;Hello&quot;</span>, <span class="hljs-string">&quot;b&quot;</span>: <span class="hljs-string">&quot;World&quot;</span>&#125;&#x27;</code></pre>
+
+<p><strong>代码测试：</strong></p>
+<p>新建一个json1.html,编写如下代码：</p>
+<pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;en&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Title<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>
+<span class="javascript">        <span class="hljs-comment">//编写一个对象</span></span>
+<span class="javascript">        <span class="hljs-keyword">var</span> user = &#123;</span>
+<span class="javascript">          name:<span class="hljs-string">&quot;renwen&quot;</span>,</span>
+          age: 3,
+<span class="javascript">          sex:<span class="hljs-string">&quot;男&quot;</span></span>
+        &#125;;
+<span class="javascript">        <span class="hljs-comment">//js-&gt;json</span></span>
+<span class="javascript">        <span class="hljs-keyword">var</span> str = <span class="hljs-built_in">JSON</span>.stringify(user);</span>
+<span class="javascript">        <span class="hljs-built_in">console</span>.log(str)</span>
+<span class="javascript">        <span class="hljs-comment">//json-&gt;js</span></span>
+<span class="javascript">        <span class="hljs-keyword">var</span> user2 = <span class="hljs-built_in">JSON</span>.parse(str)</span>
+<span class="javascript">        <span class="hljs-built_in">console</span>.log(user2.name, user2.age, user2.sex)</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span></code></pre>
+
+<p>浏览器输出：</p>
+<p><img src="/images/JSON/image-20201217204655292.png" srcset="/img/loading.gif" alt="image-20201217204655292"></p>
+<h2 id="2-Controller返回JSON数据"><a href="#2-Controller返回JSON数据" class="headerlink" title="2. Controller返回JSON数据"></a>2. Controller返回JSON数据</h2><p>Jackson应该是目前比较好的json解析工具了，当然工具不止这一个，比如还有阿里巴巴的 fastjson 等等。</p>
+<p>我们这里使用Jackson，使用它需要导入它的jar包：</p>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--json的解析工具--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jackson-databind<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.10.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+
+<ol>
+<li>导入相关的依赖：pom.xml</li>
+</ol>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">project</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">parent</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>SpringMVC<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.example<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0-SNAPSHOT<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">parent</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">modelVersion</span>&gt;</span>4.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">modelVersion</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>springmvc-05-json<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span>
+        <span class="hljs-comment">&lt;!--json的解析工具--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jackson-databind<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.10.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.projectlombok<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>lombok<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.18.12<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span></code></pre>
+
+<ol start="2">
+<li>创建项目基本的框架结构</li>
+</ol>
+<p><img src="/images/JSON/image-20201218190214172.png" srcset="/img/loading.gif" alt="image-20201218190214172"></p>
+<ol start="3">
+<li>创建applicationContext.xml、spring-mvc.xml（由于这一次我们不涉及service,mapper层，因此其他的我们就不创建了）</li>
+</ol>
+<p>spring-mvc.xml //注解驱动、扫描、视图解析</p>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:context</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/context&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:mvc</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/mvc&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/beans/spring-beans.xsd</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/context</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/context/spring-context.xsd</span></span>
+<span class="hljs-tag"><span class="hljs-string">   http://www.springframework.org/schema/mvc</span></span>
+<span class="hljs-tag"><span class="hljs-string">   https://www.springframework.org/schema/mvc/spring-mvc.xsd&quot;</span>&gt;</span>
+    
+    <span class="hljs-tag">&lt;<span class="hljs-name">mvc:annotation-driven</span>/&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">context:component-scan</span> <span class="hljs-attr">base-package</span>=<span class="hljs-string">&quot;com.wen.controller&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;suffix&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;/WEB-INF/jsp/&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;prefix&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;.jsp&quot;</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
+
+<p>applicationContext.xml</p>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">       <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span>
+<span class="hljs-tag"><span class="hljs-string">       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">import</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">&quot;spring/spring-mvc.xml&quot;</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span></code></pre>
+
+<ol start="4">
+<li>配置web.xml</li>
+</ol>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">web-app</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd&quot;</span></span>
+<span class="hljs-tag">         <span class="hljs-attr">version</span>=<span class="hljs-string">&quot;4.0&quot;</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--DispatcherServlet--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">servlet</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">servlet-name</span>&gt;</span>DispatcherServlet<span class="hljs-tag">&lt;/<span class="hljs-name">servlet-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="hljs-tag">&lt;/<span class="hljs-name">servlet-class</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">init-param</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-name</span>&gt;</span>contextConfigLocation<span class="hljs-tag">&lt;/<span class="hljs-name">param-name</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-value</span>&gt;</span>classpath:applicationContext.xml<span class="hljs-tag">&lt;/<span class="hljs-name">param-value</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">init-param</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">load-on-startup</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">load-on-startup</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">servlet</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">servlet-mapping</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">servlet-name</span>&gt;</span>DispatcherServlet<span class="hljs-tag">&lt;/<span class="hljs-name">servlet-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">servlet-mapping</span>&gt;</span>
+    <span class="hljs-comment">&lt;!--乱码过滤--&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">filter</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-class</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">init-param</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-name</span>&gt;</span>encoding<span class="hljs-tag">&lt;/<span class="hljs-name">param-name</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">param-value</span>&gt;</span>UTF-8<span class="hljs-tag">&lt;/<span class="hljs-name">param-value</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">init-param</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">filter</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">filter-mapping</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">filter-name</span>&gt;</span>encodingFilter<span class="hljs-tag">&lt;/<span class="hljs-name">filter-name</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">url-pattern</span>&gt;</span>/*<span class="hljs-tag">&lt;/<span class="hljs-name">url-pattern</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">filter-mapping</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">web-app</span>&gt;</span></code></pre>
+
+<ol start="5">
+<li>编写实体User，编写controller</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.pojo;
+
+<span class="hljs-keyword">import</span> lombok.AllArgsConstructor;
+<span class="hljs-keyword">import</span> lombok.Data;
+<span class="hljs-keyword">import</span> lombok.NoArgsConstructor;
+
+<span class="hljs-meta">@Data</span>
+<span class="hljs-meta">@AllArgsConstructor</span>
+<span class="hljs-meta">@NoArgsConstructor</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>&#123;
+    <span class="hljs-keyword">private</span> String name;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> age;
+    <span class="hljs-keyword">private</span> String sex;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.controller;
+
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.core.JsonProcessingException;
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;
+<span class="hljs-keyword">import</span> com.wen.pojo.User;
+<span class="hljs-keyword">import</span> org.springframework.stereotype.Controller;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;
+<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;
+
+<span class="hljs-meta">@Controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>&#123;
+    <span class="hljs-meta">@RequestMapping(&quot;/json1&quot;)</span>
+    <span class="hljs-meta">@ResponseBody</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">json1</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> JsonProcessingException </span>&#123;
+        <span class="hljs-comment">//创建一个jackson的对象映射器，用来解析数据</span>
+        ObjectMapper mapper = <span class="hljs-keyword">new</span> ObjectMapper();
+        <span class="hljs-comment">//创建一个对象</span>
+        User user = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆1号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+        <span class="hljs-comment">//将我们的对象解析成为json格式</span>
+        String str = mapper.writeValueAsString(user);
+        <span class="hljs-comment">//由于@ResponseBody注解，这里会将str转成json格式返回；十分方便</span>
+        <span class="hljs-keyword">return</span> str;
+    &#125;
+
+&#125;</code></pre>
+
+<ol start="6">
+<li>配置Tomcat，测试运行</li>
+</ol>
+<p><img src="/images/JSON/image-20201218190545029.png" srcset="/img/loading.gif" alt="image-20201218190545029"></p>
+<p>出现了乱码！</p>
+<p>解决方法：我们需要指定响应体的返回类型和编码：</p>
+<pre><code class="hljs java"><span class="hljs-comment">//produces:指定响应体返回类型和编码</span>
+<span class="hljs-meta">@RequestMapping(value = &quot;/json1&quot;,produces = &quot;application/json;charset=utf-8&quot;)</span></code></pre>
+
+<p><img src="/images/JSON/image-20201218190710874.png" srcset="/img/loading.gif" alt="image-20201218190710874"></p>
+<p>重新测试运行：</p>
+<p><img src="/images/JSON/image-20201218190757304.png" srcset="/img/loading.gif" alt="image-20201218190757304"></p>
+<p>==【注意：使用json记得处理乱码问题】==</p>
+<h2 id="3-代码优化"><a href="#3-代码优化" class="headerlink" title="3. 代码优化"></a>3. 代码优化</h2><h3 id="3-1-乱码统一解决"><a href="#3-1-乱码统一解决" class="headerlink" title="3.1 乱码统一解决"></a>3.1 乱码统一解决</h3><p>上一节中，我们提到乱码问题，上一节的解决方法比较麻烦，，如果项目中有许多请求则每一个都要添加，可以通过Spring配置统一指定，这样就不用每次都去处理了！</p>
+<p>我们可以在springmvc的配置文件上添加一段消息 ：StringHttpMessageConverter转换配置！（修改注解驱动那一行）</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">mvc:annotation-driven</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">mvc:message-converters</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">constructor-arg</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>/&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.http.converter.json.MappingJackson2HttpMessageConverter&quot;</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;objectMapper&quot;</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean&quot;</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;failOnEmptyBeans&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;false&quot;</span>/&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">mvc:message-converters</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">mvc:annotation-driven</span>&gt;</span></code></pre>
+
+<p>注释掉指定响应体返回类型和编码，通过统一乱码处理，测试运行！</p>
+<p><img src="/images/JSON/image-20201218192128395.png" srcset="/img/loading.gif" alt="image-20201218192128395"></p>
+<p><img src="/images/JSON/image-20201218192234056.png" srcset="/img/loading.gif" alt="image-20201218192234056"></p>
+<h3 id="3-2-返回json字符串统一解决"><a href="#3-2-返回json字符串统一解决" class="headerlink" title="3.2 返回json字符串统一解决"></a>3.2 返回json字符串统一解决</h3><p>在类上直接使用 <strong>@RestController</strong>，这样子，里面所有的方法都只会返回json字符串了，不用再每一个都添加@ResponseBody ！我们在前后端分离开发中，一般都使用 @RestController ，十分便捷！</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Controller</span>
+<span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>&#123;
+    <span class="hljs-comment">//produces:指定响应体返回类型和编码</span>
+    <span class="hljs-meta">@RequestMapping(&quot;/json1&quot;)</span>
+<span class="hljs-comment">//    @ResponseBody</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">json1</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> JsonProcessingException </span>&#123;
+        <span class="hljs-comment">//创建一个jackson的对象映射器，用来解析数据</span>
+        ObjectMapper mapper = <span class="hljs-keyword">new</span> ObjectMapper();
+        <span class="hljs-comment">//创建一个对象</span>
+        User user = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆1号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+        <span class="hljs-comment">//将我们的对象解析成为json格式</span>
+        String str = mapper.writeValueAsString(user);
+        <span class="hljs-comment">//由于@ResponseBody注解，这里会将str转成json格式返回；十分方便</span>
+        <span class="hljs-keyword">return</span> str;
+    &#125;
+
+&#125;</code></pre>
+
+<p>注释掉@ReponseBody，使用@RestController，重启Tomcat测试运行！（正常输出）</p>
+<p><img src="/images/JSON/image-20201218192457623.png" srcset="/img/loading.gif" alt="image-20201218192457623"></p>
+<h3 id="3-3-测试集合输出"><a href="#3-3-测试集合输出" class="headerlink" title="3.3 测试集合输出"></a>3.3 测试集合输出</h3><p>增加新方法：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/json2&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">json2</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> JsonProcessingException </span>&#123;
+
+   <span class="hljs-comment">//创建一个jackson的对象映射器，用来解析数据</span>
+   ObjectMapper mapper = <span class="hljs-keyword">new</span> ObjectMapper();
+   <span class="hljs-comment">//创建一个对象</span>
+   User user1 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆1号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+   User user2 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆2号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+   User user3 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆3号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+   User user4 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆4号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+   List&lt;User&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;User&gt;();
+   list.add(user1);
+   list.add(user2);
+   list.add(user3);
+   list.add(user4);
+
+   <span class="hljs-comment">//将我们的对象解析成为json格式</span>
+   String str = mapper.writeValueAsString(list);
+   <span class="hljs-keyword">return</span> str;
+&#125;</code></pre>
+
+<p>测试运行：（正常输出）</p>
+<p><img src="/images/JSON/image-20201218192702635.png" srcset="/img/loading.gif" alt="image-20201218192702635"></p>
+<h2 id="4-输出时间对象"><a href="#4-输出时间对象" class="headerlink" title="4. 输出时间对象"></a>4. 输出时间对象</h2><p>增加一个方法：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/json3&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">json3</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> JsonProcessingException </span>&#123;
+
+   ObjectMapper mapper = <span class="hljs-keyword">new</span> ObjectMapper();
+
+   <span class="hljs-comment">//创建时间一个对象，java.util.Date</span>
+   Date date = <span class="hljs-keyword">new</span> Date();
+   <span class="hljs-comment">//将我们的对象解析成为json格式</span>
+   String str = mapper.writeValueAsString(date);
+   <span class="hljs-keyword">return</span> str;
+&#125;</code></pre>
+
+<p>测试：</p>
+<p><img src="/images/JSON/image-20201218192839032.png" srcset="/img/loading.gif" alt="image-20201218192839032"></p>
+<p>返回了一串数字，这个是时间的毫秒表示。Jackson 默认是会把时间转成timestamps形式。</p>
+<p>解决方案：取消timestamps形式，自定义时间格式。</p>
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/json4&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">json4</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> JsonProcessingException </span>&#123;
+
+    ObjectMapper mapper = <span class="hljs-keyword">new</span> ObjectMapper();
+
+    <span class="hljs-comment">//不使用时间戳的方式</span>
+    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, <span class="hljs-keyword">false</span>);
+    <span class="hljs-comment">//自定义日期格式对象</span>
+    SimpleDateFormat sdf = <span class="hljs-keyword">new</span> SimpleDateFormat(<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>);
+    <span class="hljs-comment">//指定日期格式</span>
+    mapper.setDateFormat(sdf);
+
+    Date date = <span class="hljs-keyword">new</span> Date();
+    String str = mapper.writeValueAsString(date);
+
+    <span class="hljs-keyword">return</span> str;
+&#125;</code></pre>
+
+<p>测试输出：</p>
+<p><img src="/images/JSON/image-20201218193152748.png" srcset="/img/loading.gif" alt="image-20201218193152748"></p>
+<p>如果不自定义日期格式，只是取消时间戳的方式，输出如下：</p>
+<p><img src="/images/JSON/image-20201218193332598.png" srcset="/img/loading.gif" alt="image-20201218193332598"></p>
+<h3 id="4-1-抽取为工具类"><a href="#4-1-抽取为工具类" class="headerlink" title="4.1 抽取为工具类"></a>4.1 <strong>抽取为工具类</strong></h3><p><strong>如果要经常使用的话，这样是比较麻烦的，我们可以将这些代码封装到一个工具类中；我们去编写下</strong></p>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.utils;
+
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.core.JsonProcessingException;
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;
+<span class="hljs-keyword">import</span> com.fasterxml.jackson.databind.SerializationFeature;
+
+<span class="hljs-keyword">import</span> java.text.SimpleDateFormat;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JsonUtils</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getJson</span><span class="hljs-params">(Object object)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> getJson(object,<span class="hljs-string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>);
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getJson</span><span class="hljs-params">(Object object, String dateFormat)</span></span>&#123;
+        ObjectMapper objectMapper = <span class="hljs-keyword">new</span> ObjectMapper();
+        <span class="hljs-comment">//取消时间戳</span>
+        objectMapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, <span class="hljs-keyword">false</span>);
+        <span class="hljs-comment">//自定义时间格式对象</span>
+        SimpleDateFormat simpleDateFormat = <span class="hljs-keyword">new</span> SimpleDateFormat(dateFormat);
+        <span class="hljs-comment">//指定格式</span>
+        objectMapper.setDateFormat(simpleDateFormat);
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-keyword">return</span> objectMapper.writeValueAsString(object);
+        &#125;<span class="hljs-keyword">catch</span> (JsonProcessingException e)&#123;
+            e.printStackTrace();
+        &#125;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/json4&quot;)</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">json4</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> JsonProcessingException </span>&#123;
+
+    <span class="hljs-keyword">return</span> JsonUtils.getJson(<span class="hljs-keyword">new</span> Date());
+&#125;</code></pre>
+
+<p>测试运行：</p>
+<p><img src="/images/JSON/image-20201218194625598.png" srcset="/img/loading.gif" alt="image-20201218194625598"></p>
+<h2 id="5-FastJson（阿里）"><a href="#5-FastJson（阿里）" class="headerlink" title="5. FastJson（阿里）"></a>5. FastJson（阿里）</h2><p>fastjson.jar是阿里开发的一款专门用于Java开发的包，可以方便的实现json对象与JavaBean对象的转换，实现JavaBean对象与json字符串的转换，实现json对象与json字符串的转换。实现json的转换方法很多，最后的实现结果都是一样的。</p>
+<p>fastjson 的 pom依赖！</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>fastjson<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.2.47<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+
+<p>fastjson 三个主要的类：</p>
+<ol>
+<li><p><strong>JSONObject:代表 json 对象</strong> </p>
+<ul>
+<li>JSONObject实现了Map接口, 猜想 JSONObject底层操作是由Map实现的。</li>
+<li>JSONObject对应json对象，通过各种形式的get()方法可以获取json对象中的数据，也可利用诸如size()，isEmpty()等方法获取”键：值”对的个数和判断是否为空。其本质是通过实现Map接口并调用接口中的方法完成的。</li>
+</ul>
+</li>
+<li><p><strong>JSONArray:代表 json 对象数组</strong></p>
+<ul>
+<li>内部是有List接口中的方法来完成操作的。</li>
+</ul>
+</li>
+<li><p><strong>JSON:代表JSONObject和JSONArray的转化</strong></p>
+<ul>
+<li>JSON类源码分析与使用</li>
+<li>仔细观察这些方法，主要是实现json对象，json对象数组，javabean对象，json字符串之间的相互转化。</li>
+</ul>
+</li>
+</ol>
+<p>代码测试，创建新类：<strong>FastJsonDemo</strong> </p>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.wen.utils;
+
+<span class="hljs-keyword">import</span> com.alibaba.fastjson.JSON;
+<span class="hljs-keyword">import</span> com.alibaba.fastjson.JSONObject;
+<span class="hljs-keyword">import</span> com.wen.pojo.User;
+
+<span class="hljs-keyword">import</span> java.util.ArrayList;
+<span class="hljs-keyword">import</span> java.util.List;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FastJsonDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-comment">//创建一个对象</span>
+        User user1 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆1号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+        User user2 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆2号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+        User user3 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆3号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+        User user4 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;秦疆4号&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;男&quot;</span>);
+        List&lt;User&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;User&gt;();
+        list.add(user1);
+        list.add(user2);
+        list.add(user3);
+        list.add(user4);
+
+        System.out.println(<span class="hljs-string">&quot;*******Java对象 转 JSON字符串*******&quot;</span>);
+        String str1 = JSON.toJSONString(list);
+        System.out.println(<span class="hljs-string">&quot;JSON.toJSONString(list)==&gt;&quot;</span>+str1);
+
+        System.out.println(<span class="hljs-string">&quot;\n****** JSON字符串 转 Java对象*******&quot;</span>);
+        String str2 = JSON.toJSONString(user1);
+        User json_user1 = JSON.parseObject(str2, User.class);
+        System.out.println(<span class="hljs-string">&quot;JSON.parseObject(str2,User.class)==&gt;&quot;</span>+json_user1);
+
+        System.out.println(<span class="hljs-string">&quot;\n****** Java对象 转 JSON对象 ******&quot;</span>);
+        JSONObject jsonObject1 = (JSONObject) JSON.toJSON(user2);
+        System.out.println(<span class="hljs-string">&quot;(JSONObject) JSON.toJSON(user2)==&gt;&quot;</span>+jsonObject1);
+        System.out.println(<span class="hljs-string">&quot;(JSONObject) JSON.toJSON(user2) name:==&gt;&quot;</span>+jsonObject1.getString(<span class="hljs-string">&quot;name&quot;</span>));
+
+        System.out.println(<span class="hljs-string">&quot;\n****** JSON对象 转 Java对象 ******&quot;</span>);
+        User jsonBean_user = JSON.toJavaObject(jsonObject1, User.class);
+        System.out.println(<span class="hljs-string">&quot;JSON.toJavaObject(jsonObject1, User.class)==&gt;&quot;</span>+jsonBean_user);
+    &#125;
+&#125;</code></pre>
+
+<p>输出：</p>
+<p><img src="/images/JSON/image-20201218195809757.png" srcset="/img/loading.gif" alt="image-20201218195809757"></p>
+<p>种工具类，我们只需要掌握使用就好了，在使用的时候在根据具体的业务去找对应的实现。和以前的commons-io那种工具包一样，拿来用就好了！</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/16/idea%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%E5%88%B0github/">
+                        <span class="hidden-mobile">idea上传项目到github</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?7d2fd3d56f2287a0bda354d214258de6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
