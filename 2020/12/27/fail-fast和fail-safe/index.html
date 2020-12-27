@@ -1,0 +1,829 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="梦想很珍贵，努力特别酷。-xback">
+  <meta name="author" content="Crazyrw">
+  <meta name="keywords" content="">
+  <title>fail-fast和fail-safe - Crazyrw&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":true,"baidu":"7d2fd3d56f2287a0bda354d214258de6","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Crazyrw's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/images/bg/post.webp') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="fail-fast和fail-safe">
+              
+            </span>
+
+            <p class="h2"><a id="rainbow" href=''>🌈 获取中...</a></p>
+            <script>
+              fetch('https://api.eatrice.top')
+                .then(response => response.json())
+                .then(data => {
+                  var rainbow = document.getElementById('rainbow');
+                  rainbow.innerHTML = data.Content;
+                  rainbow.href = "https://rainbow.eatrice.top/?ID=" + data.ID;
+                })
+                .catch(console.error)
+              </script>
+
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-27 16:26" pubdate>
+        December 27, 2020 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.4k 字
+    </span>
+  
+
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">fail-fast和fail-safe</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：a few seconds ago
+                
+              </p>
+            
+            <div class="markdown-body">
+              <p>fail-fast与fasy-safe。</p>
+<p>在Collection集合的各个类中，有线程安全和线程不安全两类。</p>
+<p>对于线程不安全的类，并发情况下可能会出现fail-fast情况；而线程安全的类，可能会出现fail-safe的情况。</p>
+<p><strong>并发修改：</strong></p>
+<p>当一个或多个线程正在遍历一个集合Collection的时候，而此时另一个线程修改了这个集合的内容（如添加、删除或者修改）。这就是并发修改的情况。</p>
+<p><strong>抛出异常的原因：</strong></p>
+<h2 id="1-fail-fast"><a href="#1-fail-fast" class="headerlink" title="1. fail-fast"></a>1. fail-fast</h2><p>fail-fast机制：当遍历一个集合对象时，如果集合对象的结构被修改了，就会抛出ConcurrentModificationException异常。</p>
+<p><strong>测试：(下面是单线程的情况，其实多线程是类似的)</strong></p>
+<pre><code class="hljs java"><span class="hljs-keyword">import</span> java.util.ArrayList;
+<span class="hljs-keyword">import</span> java.util.Iterator;
+<span class="hljs-keyword">import</span> java.util.List;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestCoding</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        List&lt;Integer&gt; list1 = <span class="hljs-keyword">new</span> ArrayList&lt;Integer&gt;();
+        list1.add(<span class="hljs-number">18</span>);
+        list1.add(<span class="hljs-number">20</span>);
+        list1.add(<span class="hljs-number">30</span>);
+        list1.add(<span class="hljs-number">40</span>);
+        Iterator&lt;Integer&gt; it = list1.iterator();
+
+        <span class="hljs-keyword">while</span> (it.hasNext())&#123;
+            Integer integer = it.next();
+            <span class="hljs-keyword">if</span>(integer == <span class="hljs-number">20</span>)&#123;
+                list1.remove(integer);
+            &#125;
+        &#125;
+
+    &#125;
+&#125;</code></pre>
+
+<img src="/images/fail-fast和fail-safe/image-20201227184015970.png" srcset="/img/loading.gif" alt="image-20201227184015970" style="zoom:80%;" />
+
+<p><strong>原因分析：</strong></p>
+<p>我们先看看Iterator的源码。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> java.util;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractList</span>&lt;<span class="hljs-title">E</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractCollection</span>&lt;<span class="hljs-title">E</span>&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title">List</span>&lt;<span class="hljs-title">E</span>&gt; </span>&#123;
+
+    ...
+
+        <span class="hljs-comment">// AbstractList中唯一的属性</span>
+        <span class="hljs-comment">// 用来记录List修改的次数：每修改一次(添加/删除等操作)，将modCount+1</span>
+        <span class="hljs-keyword">protected</span> <span class="hljs-keyword">transient</span> <span class="hljs-keyword">int</span> modCount = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">// 返回List对应迭代器。实际上，是返回Itr对象。</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Iterator&lt;E&gt; <span class="hljs-title">iterator</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Itr();
+    &#125;
+
+    <span class="hljs-comment">// Itr是Iterator(迭代器)的实现类</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Itr</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Iterator</span>&lt;<span class="hljs-title">E</span>&gt; </span>&#123;
+        <span class="hljs-keyword">int</span> cursor = <span class="hljs-number">0</span>;
+
+        <span class="hljs-keyword">int</span> lastRet = -<span class="hljs-number">1</span>;
+
+        <span class="hljs-comment">// 修改数的记录值。</span>
+        <span class="hljs-comment">// 每次新建Itr()对象时，都会保存新建该对象时对应的modCount；</span>
+        <span class="hljs-comment">// 以后每次遍历List中的元素的时候，都会比较expectedModCount和modCount是否相等；</span>
+        <span class="hljs-comment">// 若不相等，则抛出ConcurrentModificationException异常，产生fail-fast事件。</span>
+        <span class="hljs-keyword">int</span> expectedModCount = modCount;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">hasNext</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">return</span> cursor != size();
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> E <span class="hljs-title">next</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-comment">// 获取下一个元素之前，都会判断“新建Itr对象时保存的modCount”和“当前的modCount”是否相等；</span>
+            <span class="hljs-comment">// 若不相等，则抛出ConcurrentModificationException异常，产生fail-fast事件。</span>
+            checkForComodification();
+            <span class="hljs-keyword">try</span> &#123;
+                E next = get(cursor);
+                lastRet = cursor++;
+                <span class="hljs-keyword">return</span> next;
+            &#125; <span class="hljs-keyword">catch</span> (IndexOutOfBoundsException e) &#123;
+                checkForComodification();
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NoSuchElementException();
+            &#125;
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">remove</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">if</span> (lastRet == -<span class="hljs-number">1</span>)
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException();
+            checkForComodification();
+
+            <span class="hljs-keyword">try</span> &#123;
+                AbstractList.<span class="hljs-keyword">this</span>.remove(lastRet);
+                <span class="hljs-keyword">if</span> (lastRet &lt; cursor)
+                    cursor--;
+                lastRet = -<span class="hljs-number">1</span>;
+                expectedModCount = modCount;
+            &#125; <span class="hljs-keyword">catch</span> (IndexOutOfBoundsException e) &#123;
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ConcurrentModificationException();
+            &#125;
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title">checkForComodification</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">if</span> (modCount != expectedModCount)
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ConcurrentModificationException();
+        &#125;
+    &#125;
+
+    ...
+&#125;</code></pre>
+
+<p>从中，我们可以发现在调用 next() 和 remove()时，都会执行 checkForComodification()。若 “<strong>modCount 不等于 expectedModCount</strong>”，则抛出ConcurrentModificationException异常，产生fail-fast事件。</p>
+<p>要搞明白 fail-fast机制，我们就要需要理解什么时候“modCount 不等于 expectedModCount”！<br>从Itr类中，我们知道 expectedModCount 在创建Itr对象时，被赋值为 modCount，除此之外其他任何情况，expectedModCount 都不会被修改。通过Itr，我们知道：expectedModCount不可能被修改为不等于 modCount。所以，需要考证的就是modCount何时会被修改。</p>
+<p>接下来，我们看一下ArrayList的源码，看看modCount是如何被修改的：</p>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> java.util;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ArrayList</span>&lt;<span class="hljs-title">E</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractList</span>&lt;<span class="hljs-title">E</span>&gt;</span>
+<span class="hljs-class">    <span class="hljs-keyword">implements</span> <span class="hljs-title">List</span>&lt;<span class="hljs-title">E</span>&gt;, <span class="hljs-title">RandomAccess</span>, <span class="hljs-title">Cloneable</span>, <span class="hljs-title">java</span>.<span class="hljs-title">io</span>.<span class="hljs-title">Serializable</span></span>
+<span class="hljs-class"></span>&#123;
+
+    ...
+
+        <span class="hljs-comment">// list中容量变化时，对应的同步函数</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ensureCapacity</span><span class="hljs-params">(<span class="hljs-keyword">int</span> minCapacity)</span> </span>&#123;
+        modCount++;
+        <span class="hljs-keyword">int</span> oldCapacity = elementData.length;
+        <span class="hljs-keyword">if</span> (minCapacity &gt; oldCapacity) &#123;
+            Object oldData[] = elementData;
+            <span class="hljs-keyword">int</span> newCapacity = (oldCapacity * <span class="hljs-number">3</span>)/<span class="hljs-number">2</span> + <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">if</span> (newCapacity &lt; minCapacity)
+                newCapacity = minCapacity;
+            <span class="hljs-comment">// minCapacity is usually close to size, so this is a win:</span>
+            elementData = Arrays.copyOf(elementData, newCapacity);
+        &#125;
+    &#125;
+
+
+    <span class="hljs-comment">// 添加元素到队列最后</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">add</span><span class="hljs-params">(E e)</span> </span>&#123;
+        <span class="hljs-comment">// 修改modCount</span>
+        ensureCapacity(size + <span class="hljs-number">1</span>);  <span class="hljs-comment">// Increments modCount!!</span>
+        elementData[size++] = e;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+    &#125;
+
+
+    <span class="hljs-comment">// 添加元素到指定的位置</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index, E element)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (index &gt; size || index &lt; <span class="hljs-number">0</span>)
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IndexOutOfBoundsException(
+            <span class="hljs-string">&quot;Index: &quot;</span>+index+<span class="hljs-string">&quot;, Size: &quot;</span>+size);
+
+        <span class="hljs-comment">// 修改modCount</span>
+        ensureCapacity(size+<span class="hljs-number">1</span>);  <span class="hljs-comment">// Increments modCount!!</span>
+        System.arraycopy(elementData, index, elementData, index + <span class="hljs-number">1</span>,
+                         size - index);
+        elementData[index] = element;
+        size++;
+    &#125;
+
+    <span class="hljs-comment">// 添加集合</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">addAll</span><span class="hljs-params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;
+        Object[] a = c.toArray();
+        <span class="hljs-keyword">int</span> numNew = a.length;
+        <span class="hljs-comment">// 修改modCount</span>
+        ensureCapacity(size + numNew);  <span class="hljs-comment">// Increments modCount</span>
+        System.arraycopy(a, <span class="hljs-number">0</span>, elementData, size, numNew);
+        size += numNew;
+        <span class="hljs-keyword">return</span> numNew != <span class="hljs-number">0</span>;
+    &#125;
+
+
+    <span class="hljs-comment">// 删除指定位置的元素</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> E <span class="hljs-title">remove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+        RangeCheck(index);
+
+        <span class="hljs-comment">// 修改modCount</span>
+        modCount++;
+        E oldValue = (E) elementData[index];
+
+        <span class="hljs-keyword">int</span> numMoved = size - index - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">if</span> (numMoved &gt; <span class="hljs-number">0</span>)
+            System.arraycopy(elementData, index+<span class="hljs-number">1</span>, elementData, index, numMoved);
+        elementData[--size] = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// Let gc do its work</span>
+
+        <span class="hljs-keyword">return</span> oldValue;
+    &#125;
+
+
+    <span class="hljs-comment">// 快速删除指定位置的元素</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">fastRemove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>&#123;
+
+        <span class="hljs-comment">// 修改modCount</span>
+        modCount++;
+        <span class="hljs-keyword">int</span> numMoved = size - index - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">if</span> (numMoved &gt; <span class="hljs-number">0</span>)
+            System.arraycopy(elementData, index+<span class="hljs-number">1</span>, elementData, index,
+                             numMoved);
+        elementData[--size] = <span class="hljs-keyword">null</span>; <span class="hljs-comment">// Let gc do its work</span>
+    &#125;
+
+    <span class="hljs-comment">// 清空集合</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">clear</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-comment">// 修改modCount</span>
+        modCount++;
+
+        <span class="hljs-comment">// Let gc do its work</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; size; i++)
+            elementData[i] = <span class="hljs-keyword">null</span>;
+
+        size = <span class="hljs-number">0</span>;
+    &#125;
+
+    ...
+&#125;</code></pre>
+
+<p>从中，我们发现：无论是add()、remove()，还是clear()，只要涉及到修改集合中的元素个数时，都会改变modCount的值。</p>
+<p><strong>因此</strong>，在iterator遍历中，执行add、remove、clear等方法，会改变modCount的值，从而会抛出ConcurrentModificationException异常，产生fail-fast事件。</p>
+<p>在测试过程中，遇到了一个有意思的问题：</p>
+<img src="/images/fail-fast和fail-safe/image-20201227182712771.png" srcset="/img/loading.gif" alt="image-20201227182712771" style="zoom:80%;" />
+
+<p><strong>竟然不报错？？真是百思不得其解，最后在知乎上看到了相关的回答。</strong></p>
+<p>通过上面的分析，我们发现只有next()、remove()时才会检查exceptedMoCount和modCount的值。而只要涉及改变集合元素的操作modCount都会变化，而exceptedModCount在初始化之后就不变了。</p>
+<p>基于这些结论，我们再来分析这段代码，其实这里不报异常的问题在于hasNext()方法，我们接下来看一下源码：</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">hasNext</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> cursor != size;
+&#125;</code></pre>
+
+<p>其中，cursor的意思是，index of next element，下一个要遍历元素的下标.</p>
+<p>当运行完list1.remove(integer)//integer=20这行代码之后，很明显，size=2,cursor=2，导致了hasNext()返回false，结束了循环。因此，是因为hasNext()返回了false使得提前结束了循环，还没有运行到next()方法，所以没有报ConcurrentModificationException异常。</p>
+<p>除此之外，还看到了一个比较有意思的问题，ArrayList有两个remove方法，</p>
+<pre><code class="hljs java"><span class="hljs-function">E <span class="hljs-title">remove</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span> </span>
+<span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">remove</span><span class="hljs-params">(Object o)</span></span></code></pre>
+
+<p>当参数是Integer时会调用哪个？ 我在JLS中找到这么一段，意思是选择重载函数时不会优先考虑装箱跟拆箱:</p>
+<p>The first phase (<a href="https://link.zhihu.com/?target=http://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html%23jls-15.12.2.2">§15.12.2.2</a>) performs overload resolution without permitting boxing or unboxing conversion, or the use of variable arity method invocation. If no applicable method is found during this phase then processing continues to the second phase.</p>
+<p>我的理解是，应该是直接调用第二个函数的。</p>
+<p>避免抛异常的解决方法：</p>
+<img src="/images/fail-fast和fail-safe/image-20201227184803512.png" srcset="/img/loading.gif" alt="image-20201227184803512" style="zoom:80%;" />
+
+<p>方法就是使用iterator自带的remove()方法，为什么使用这个方法没问题呢？是因为该remove方法并不会修改modCount的值，并且不会对后面的遍历造成影响，因为该方法remove不能指定元素，只能remove当前遍历过的那个元素，所以调用该方法并不会发生fail-fast现象。该方法有局限性。</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">remove</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (lastRet &lt; <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException();
+    checkForComodification();
+
+    <span class="hljs-keyword">try</span> &#123;
+        ArrayList.<span class="hljs-keyword">this</span>.remove(lastRet);
+        cursor = lastRet;
+        lastRet = -<span class="hljs-number">1</span>;
+        expectedModCount = modCount;<span class="hljs-comment">//同志们，看到了吗？！这儿，没变！</span>
+    &#125; <span class="hljs-keyword">catch</span> (IndexOutOfBoundsException ex) &#123;
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ConcurrentModificationException();
+    &#125;
+&#125;</code></pre>
+
+<p>还有一种方法是：</p>
+<p>使用java并发包(java.util.concurrent)中的类来代替 ArrayList 和hashMap。</p>
+<p>比如使用 CopyOnWriterArrayList代替 ArrayList， CopyOnWriterArrayList在是使用上跟 ArrayList几乎一样， CopyOnWriter是写时复制的容器(COW)，在读写时是线程安全的。该容器在对add和remove等操作时，并不是在原数组上进行修改，而是将原数组拷贝一份，在新数组上进行修改，待完成后，才将指向旧数组的引用指向新数组，所以对于 CopyOnWriterArrayList在迭代过程并不会发生fail-fast现象。但 CopyOnWrite容器只能保证数据的最终一致性，不能保证数据的实时一致性。</p>
+<p>对于HashMap，可以使用ConcurrentHashMap， ConcurrentHashMap采用了锁机制，是线程安全的。在迭代方面，ConcurrentHashMap使用了一种不同的迭代方式。在这种迭代方式中，当iterator被创建后集合再发生改变就不再是抛出ConcurrentModificationException，取而代之的是在改变时new新的数据从而不影响原有的数据 ，iterator完成后再将头指针替换为新的数据 ，这样iterator线程可以使用原来老的数据，而写线程也可以并发的完成改变。即迭代不会发生fail-fast，但不保证获取的是最新的数据。</p>
+<p>CopyOnWriterArrayList源码：</p>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> java.util.concurrent;
+<span class="hljs-keyword">import</span> java.util.*;
+<span class="hljs-keyword">import</span> java.util.concurrent.locks.*;
+<span class="hljs-keyword">import</span> sun.misc.Unsafe;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CopyOnWriteArrayList</span>&lt;<span class="hljs-title">E</span>&gt;</span>
+<span class="hljs-class">    <span class="hljs-keyword">implements</span> <span class="hljs-title">List</span>&lt;<span class="hljs-title">E</span>&gt;, <span class="hljs-title">RandomAccess</span>, <span class="hljs-title">Cloneable</span>, <span class="hljs-title">java</span>.<span class="hljs-title">io</span>.<span class="hljs-title">Serializable</span> </span>&#123;
+
+    ...
+
+    <span class="hljs-comment">// 返回集合对应的迭代器</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Iterator&lt;E&gt; <span class="hljs-title">iterator</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> COWIterator&lt;E&gt;(getArray(), <span class="hljs-number">0</span>);
+    &#125;
+
+    ...
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">COWIterator</span>&lt;<span class="hljs-title">E</span>&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title">ListIterator</span>&lt;<span class="hljs-title">E</span>&gt; </span>&#123;
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> Object[] snapshot;
+
+        <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> cursor;
+
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">COWIterator</span><span class="hljs-params">(Object[] elements, <span class="hljs-keyword">int</span> initialCursor)</span> </span>&#123;
+            cursor = initialCursor;
+            <span class="hljs-comment">// 新建COWIterator时，将集合中的元素保存到一个新的拷贝数组中。</span>
+            <span class="hljs-comment">// 这样，当原始集合的数据改变，拷贝数据中的值也不会变化。</span>
+            snapshot = elements;
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">hasNext</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">return</span> cursor &lt; snapshot.length;
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">hasPrevious</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">return</span> cursor &gt; <span class="hljs-number">0</span>;
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> E <span class="hljs-title">next</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">if</span> (! hasNext())
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NoSuchElementException();
+            <span class="hljs-keyword">return</span> (E) snapshot[cursor++];
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> E <span class="hljs-title">previous</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">if</span> (! hasPrevious())
+                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NoSuchElementException();
+            <span class="hljs-keyword">return</span> (E) snapshot[--cursor];
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">nextIndex</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">return</span> cursor;
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">previousIndex</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">return</span> cursor-<span class="hljs-number">1</span>;
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">remove</span><span class="hljs-params">()</span> </span>&#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsupportedOperationException();
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">set</span><span class="hljs-params">(E e)</span> </span>&#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsupportedOperationException();
+        &#125;
+
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add</span><span class="hljs-params">(E e)</span> </span>&#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> UnsupportedOperationException();
+        &#125;
+    &#125;
+
+    ...
+
+&#125;</code></pre>
+
+<p>根据源码我们可以看出：</p>
+<ul>
+<li>和ArrayList继承于AbstractList不同，CopyOnWriteArrayList没有继承于AbstractList，它仅仅只是实现了List接口</li>
+<li>ArrayList的iterator()函数返回的Iterator是在AbstractList中实现的；而CopyOnWriteArrayList是自己实现Iterator。</li>
+<li>ArrayList的Iterator实现类中调用next()时，会“调用checkForComodification()比较‘expectedModCount’和‘modCount’的大小”；但是，CopyOnWriteArrayList的Iterator实现类中，没有所谓的checkForComodification()，更不会抛出ConcurrentModificationException异常！ </li>
+</ul>
+<h2 id="2-fail-safe"><a href="#2-fail-safe" class="headerlink" title="2. fail-safe"></a>2. fail-safe</h2><p>//to be continued</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/27/%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%EF%BC%88%E4%B8%8D%E6%96%AD%E4%BF%AE%E6%94%B9%EF%BC%89/">
+                        <span class="hidden-mobile">大数据学习路线（Java方向）（不断更正中）</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?7d2fd3d56f2287a0bda354d214258de6";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

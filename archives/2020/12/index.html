@@ -184,13 +184,19 @@
                 
 
 <div class="list-group">
-  <p class="h4">16 posts in total.</p>
+  <p class="h4">17 posts in total.</p>
   <hr>
   
   
     
       
       <p class="h5">2020</p>
+    
+    <a href="/2020/12/27/fail-fast%E5%92%8Cfail-safe/" class="list-group-item list-group-item-action">
+      <span class="archive-post-title">fail-fast和fail-safe</span>
+      <time style="float: right;">12-27</time>
+    </a>
+  
     
     <a href="/2020/12/27/%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%EF%BC%88%E4%B8%8D%E6%96%AD%E4%BF%AE%E6%94%B9%EF%BC%89/" class="list-group-item list-group-item-action">
       <span class="archive-post-title">大数据学习路线（Java方向）（不断更正中）</span>
@@ -245,14 +251,20 @@
       <time style="float: right;">12-11</time>
     </a>
   
-    
-    <a href="/2020/12/08/Typora%E6%95%B0%E5%AD%A6%E7%AC%A6%E5%8F%B7/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Typora数学符号大全</span>
-      <time style="float: right;">12-08</time>
-    </a>
-  
 </div>
 
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/archives/2020/12/page/2/">2</a><a class="extend next" rel="next" href="/archives/2020/12/page/2/"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+  
+  <script>
+    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
+      ele.href += '#board';
+    }
+  </script>
 
 
 
