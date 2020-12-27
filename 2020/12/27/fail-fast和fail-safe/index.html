@@ -250,7 +250,6 @@
 <p>对于线程不安全的类，并发情况下可能会出现fail-fast情况；而线程安全的类，可能会出现fail-safe的情况。</p>
 <p><strong>并发修改：</strong></p>
 <p>当一个或多个线程正在遍历一个集合Collection的时候，而此时另一个线程修改了这个集合的内容（如添加、删除或者修改）。这就是并发修改的情况。</p>
-<p><strong>抛出异常的原因：</strong></p>
 <h2 id="1-fail-fast"><a href="#1-fail-fast" class="headerlink" title="1. fail-fast"></a>1. fail-fast</h2><p>fail-fast机制：当遍历一个集合对象时，如果集合对象的结构被修改了，就会抛出ConcurrentModificationException异常。</p>
 <p><strong>测试：(下面是单线程的情况，其实多线程是类似的)</strong></p>
 <pre><code class="hljs java"><span class="hljs-keyword">import</span> java.util.ArrayList;
