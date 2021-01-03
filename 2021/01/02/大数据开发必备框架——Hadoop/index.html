@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3k 字
+      4.1k 字
     </span>
   
 
@@ -409,8 +409,70 @@
 <p>（14）ReduceTask向MapTask获取相应分区的数据。</p>
 <p>（15）程序运行完毕后，MR会向RM申请注销自己。</p>
 <p>![顶层数据流图 (1)](/images/大数据开发必备框架——Hadoop/顶层数据流图 (1).png)</p>
-<h3 id="2-5-3-MapReduce架构概述"><a href="#2-5-3-MapReduce架构概述" class="headerlink" title="2.5.3 MapReduce架构概述"></a>2.5.3 MapReduce架构概述</h3><p>//明天继续</p>
-<h2 id="3-Hadoop运行环境搭建（开发重点）"><a href="#3-Hadoop运行环境搭建（开发重点）" class="headerlink" title="3.Hadoop运行环境搭建（开发重点）"></a>3.Hadoop运行环境搭建（开发重点）</h2><h2 id="4-Hadoop运行模式"><a href="#4-Hadoop运行模式" class="headerlink" title="4.Hadoop运行模式"></a>4.Hadoop运行模式</h2><h3 id="4-1本地运行模式"><a href="#4-1本地运行模式" class="headerlink" title="4.1本地运行模式"></a>4.1本地运行模式</h3><h3 id="4-2伪分布式运行模式"><a href="#4-2伪分布式运行模式" class="headerlink" title="4.2伪分布式运行模式"></a>4.2伪分布式运行模式</h3><p>（针对一台电脑）</p>
+<h3 id="2-5-3-MapReduce架构概述"><a href="#2-5-3-MapReduce架构概述" class="headerlink" title="2.5.3 MapReduce架构概述"></a>2.5.3 MapReduce架构概述</h3><p>MapReduce常用于对大规模数据集（大于1TB）的并行计算，或对大数据进行加工、挖掘和优化等处理。MapReduce将并行计算过程高度抽象到了两个函数map和reduce中，程序员只需要负责map和reduce函数的编写工作，而并行程序中的其他复杂问题（如分布式存储、工作调度、负责均衡、容错处理等）均可由MapReduce框架代为处理，程序员完全不用操心。</p>
+<hr>
+<p>MapReduce的技术特征：</p>
+<ul>
+<li>横向扩展，而非纵向扩展。</li>
+<li>失效被认为是常态</li>
+<li>将处理向数据迁移</li>
+<li>顺序处理数据</li>
+<li>隐藏系统层细节</li>
+<li>平滑无缝的可扩展性</li>
+</ul>
+<hr>
+<p>MapReduce的设计思想：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/482819-20200317191426229-1574114756.png" srcset="/img/loading.gif" alt="img"></p>
+<p>例如，求和：1+2+3+4+5+6+7+8+9+10=?，执行原理如下：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/482819-20200317191453256-147234515.png" srcset="/img/loading.gif" alt="img"></p>
+<hr>
+<p><strong>MapReduce的工作原理（自己总结的）</strong></p>
+<p>MapReduce处理大数据集的计算过程是将大数据集分解成 成百上千的小数据集，每个（或若干个）数据集分别由集群中一个节点进行处理并生成中间结果，然后这些中间结果会进行合并，从而得到最终结果。</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/482819-20200317191532115-1901433424.png" srcset="/img/loading.gif" alt="img"></p>
+<hr>
+<p><strong>MapReduce任务流程：</strong></p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/482819-20200317191550069-137570022.png" srcset="/img/loading.gif" alt="img"></p>
+<p>补充一下：上一部分说Yarn时，出现的MapTask就是Map的计算过程，同理，ReduceTask就是Reduce过程。</p>
+<h3 id="2-6-大数据技术生态体系"><a href="#2-6-大数据技术生态体系" class="headerlink" title="2.6 大数据技术生态体系"></a>2.6 大数据技术生态体系</h3><p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/1.png" srcset="/img/loading.gif" alt="1"></p>
+<p>说明：</p>
+<ul>
+<li><p><strong>MapReduce离线计算、Spark Core内存计算都是离线计算。</strong></p>
+</li>
+<li><p>Hive的底层其实就是MapReduce。为JavaEE诞生的。</p>
+</li>
+<li><p>Spark Sql和Hive很类似。</p>
+</li>
+<li><p>Spark Streaming：准实时计算，批处理。而Storm就是实时计算，来了就计算。</p>
+</li>
+<li><p>==现在很多大型企业已经从Storm转向Flink了。==</p>
+</li>
+</ul>
+<p>相关名词的介绍：</p>
+<ul>
+<li>Sqoop: Sqoop是一款开源软件，主要用在Hadoop、Hive与传统数据库(MySql)间进行数据传递，<strong>可以将一个关系型数据库(如MySQL、Oracle等)中的数据导入到Hadoop的HDFS中，也可以将HDFS的数据导入到关系型数据库。</strong></li>
+<li>Flume: Flume是Cloudera提供的一个高可用的，高可靠的，分布式的海量日志采集，聚合和传输的系统，Flume支持在日志系统中定制各类数据发送方，用于收集数据；同时，Flume提供对数据进行简单处理，并写到各种数据接收方（可定制）的能力。</li>
+<li>HBase: HBase是一个分布式的、面向列的开源数据库。HBase不同于一般的关系数据库，它是一个适用于非结构化数据存储的数据库。K-V数据对进行存储。</li>
+<li>Kafka: Kafka是一个分布式、分区的、多副本的、多订阅者，基于zookeeper协调的分布式日志系统（也可以当做MQ系统），常见可以用于web/nginx日志、访问日志，消息服务等等。主要应用场景：日志收集系统和消息系统。<ul>
+<li>以时间复杂度O(1)的方式提供消息持久化能力，即使对TB级以上数据也能保证常数时间的访问性能。</li>
+<li>高吞吐率：即使在非常廉价的商品机器上也能做到单机支持每秒100K条消息的传输。</li>
+<li>支持Kafka Server间的消息分区，及分布式消费，同时保证每个分区内的消息顺序传输。</li>
+<li>同时支持离线数据处理和实时数据处理。</li>
+<li>Scale out:支持在线水平扩展</li>
+</ul>
+</li>
+<li>Spark: Spark是当前最流行的开源大数据内存计算框架。可以基于Hadoop上存储的大数据进行计算。Spark实际上是对Hadoop的补充，可以在Hadoop文件系统中并行运行。<ul>
+<li>Spark支持交互式计算和复杂算法</li>
+<li>Spark是一个通用引擎，可用它完成各种各样的运算，包括SQL查询、文本处理、机器学习等，而在 Spark 出现之前，我们一般需要学习各种各样的引擎来分别处理这些需求。</li>
+</ul>
+</li>
+<li>Oozie: Oozie是一个管理Hadoop作业(job)的工作流程调度管理系统。</li>
+<li>Azkaban: Azkaban是一个批量工作流任务调度器，用于在一个工作流内以一个特定的顺序运作一组工作和流程。是一套简单的任务调度服务。</li>
+</ul>
+<hr>
+<p><strong>推荐系统项目框架：</strong></p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/20181203132727633.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103121325314.png" srcset="/img/loading.gif" alt="image-20210103121325314"></p>
+<h2 id="3-Hadoop运行环境搭建（开发重点）"><a href="#3-Hadoop运行环境搭建（开发重点）" class="headerlink" title="3.Hadoop运行环境搭建（开发重点）"></a>3.Hadoop运行环境搭建（开发重点）</h2><h2 id="4-Hadoop运行模式"><a href="#4-Hadoop运行模式" class="headerlink" title="4.Hadoop运行模式"></a>4.Hadoop运行模式</h2><h3 id="4-1本地运行模式"><a href="#4-1本地运行模式" class="headerlink" title="4.1本地运行模式"></a>4.1本地运行模式</h3><h3 id="4-2伪-分布式运行模式"><a href="#4-2伪-分布式运行模式" class="headerlink" title="4.2伪 分布式运行模式"></a>4.2伪 分布式运行模式</h3><p>（针对一台电脑）</p>
 <h3 id="4-3完全分布式运行模式（开发重点）"><a href="#4-3完全分布式运行模式（开发重点）" class="headerlink" title="4.3完全分布式运行模式（开发重点）"></a>4.3完全分布式运行模式（开发重点）</h3><h2 id="5-Hadoop编译源码（面试重点）"><a href="#5-Hadoop编译源码（面试重点）" class="headerlink" title="5.Hadoop编译源码（面试重点）"></a>5.Hadoop编译源码（面试重点）</h2><h2 id="6-常见错误及解决方案"><a href="#6-常见错误及解决方案" class="headerlink" title="6.常见错误及解决方案"></a>6.常见错误及解决方案</h2>
             </div>
             <hr>
