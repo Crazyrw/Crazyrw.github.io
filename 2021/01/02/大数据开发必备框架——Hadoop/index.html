@@ -408,7 +408,7 @@
 <p>（13）MrAppMaster等待所有MapTask运行完毕后，向RM申请容器，运行ReduceTask。</p>
 <p>（14）ReduceTask向MapTask获取相应分区的数据。</p>
 <p>（15）程序运行完毕后，MR会向RM申请注销自己。</p>
-<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/2.png" srcset="/img/loading.gif" alt="2"></p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/2.1.png" srcset="/img/loading.gif" alt="2.1"></p>
 <h3 id="2-5-3-MapReduce架构概述"><a href="#2-5-3-MapReduce架构概述" class="headerlink" title="2.5.3 MapReduce架构概述"></a>2.5.3 MapReduce架构概述</h3><p>MapReduce常用于对大规模数据集（大于1TB）的并行计算，或对大数据进行加工、挖掘和优化等处理。MapReduce将并行计算过程高度抽象到了两个函数map和reduce中，程序员只需要负责map和reduce函数的编写工作，而并行程序中的其他复杂问题（如分布式存储、工作调度、负责均衡、容错处理等）均可由MapReduce框架代为处理，程序员完全不用操心。</p>
 <hr>
 <p>MapReduce的技术特征：</p>
