@@ -197,7 +197,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.1k 字
+      5.1k 字
     </span>
   
 
@@ -472,7 +472,150 @@
 <p><strong>推荐系统项目框架：</strong></p>
 <p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/20181203132727633.png" srcset="/img/loading.gif" alt="在这里插入图片描述"></p>
 <p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103121325314.png" srcset="/img/loading.gif" alt="image-20210103121325314"></p>
-<h2 id="3-Hadoop运行环境搭建（开发重点）"><a href="#3-Hadoop运行环境搭建（开发重点）" class="headerlink" title="3.Hadoop运行环境搭建（开发重点）"></a>3.Hadoop运行环境搭建（开发重点）</h2><h2 id="4-Hadoop运行模式"><a href="#4-Hadoop运行模式" class="headerlink" title="4.Hadoop运行模式"></a>4.Hadoop运行模式</h2><h3 id="4-1本地运行模式"><a href="#4-1本地运行模式" class="headerlink" title="4.1本地运行模式"></a>4.1本地运行模式</h3><h3 id="4-2伪-分布式运行模式"><a href="#4-2伪-分布式运行模式" class="headerlink" title="4.2伪 分布式运行模式"></a>4.2伪 分布式运行模式</h3><p>（针对一台电脑）</p>
+<h2 id="3-Hadoop运行环境搭建（开发重点）"><a href="#3-Hadoop运行环境搭建（开发重点）" class="headerlink" title="3.Hadoop运行环境搭建（开发重点）"></a>3.Hadoop运行环境搭建（开发重点）</h2><p>准备工作： </p>
+<p>工具：VMware Workstation Pro(<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17g4y1v72V?from=search&seid=13236918558372824969">安装参考视频</a>)、四台虚拟机(CentOS7)、SecureCRT 8.1(用于远程连接)。</p>
+<p>虚拟机的配置如下：</p>
+<table>
+<thead>
+<tr>
+<th>hostname</th>
+<th>IP地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hadoop100</td>
+<td>192.168.123.100</td>
+</tr>
+<tr>
+<td>hadoop101</td>
+<td>192.168.123.101</td>
+</tr>
+<tr>
+<td>hadoop102</td>
+<td>192.168.123.102</td>
+</tr>
+<tr>
+<td>hadoop103</td>
+<td>192.168.123.103</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>四台虚拟机的环境配置：</strong></p>
+<ul>
+<li>IP地址、hostname按照上述表格中的配置。</li>
+<li>设置网卡自启动。</li>
+<li>关闭防火墙</li>
+<li>创建user01用户，并配置user01用户拥有root权限。</li>
+</ul>
+<p>创建完其中一个虚拟机之后，其余的虚拟机直接克隆就可，具体的流程自行百度。</p>
+<ol>
+<li><p>修改IP地址，vim /etc/sysconfig/network-scripts/ifcfg-ens33</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103193626315.png" srcset="/img/loading.gif" alt="image-20210103193626315"></p>
+</li>
+<li><p>修改主机名称 vim /etc/hostname</p>
+<p>修改/etc/hosts文件：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103194116695.png" srcset="/img/loading.gif" alt="image-20210103194116695"></p>
+</li>
+<li><p>测试各个主机之间是否畅通，使用ping命令。</p>
+</li>
+<li><p>之后重启虚拟机就可，reboot。</p>
+</li>
+<li><p>配置user01用户拥有root权限。</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103194836331.png" srcset="/img/loading.gif" alt="image-20210103194836331"></p>
+</li>
+<li><p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103194814970.png" srcset="/img/loading.gif" alt="image-20210103194814970"></p>
+</li>
+<li><p>在/opt目录下创建文件夹,配置JDK，Hadoop</p>
+<ul>
+<li><p>在/opt目录下创建module,software文件夹</p>
+<p>software：存放所有的jar包</p>
+<p>module：将所有的jar解压到这里。</p>
+<p>sudo mkdir software</p>
+<p>sudo mkdir module</p>
+<p>使用sudo创建的文件夹属于root用户，因此我们还需要修改一下所属者和所属组：sudo chown user01:user01 module/ software/</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103195419374.png" srcset="/img/loading.gif" alt="image-20210103195419374"></p>
+</li>
+<li><p>将所需要的文件传输到虚拟机</p>
+<p>快捷键：Alt+P,进入到/opt/software目录，之后通过拖拽的方式即可传输。</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103195905787.png" srcset="/img/loading.gif" alt="image-20210103195905787"></p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103200008540.png" srcset="/img/loading.gif" alt="image-20210103200008540"></p>
+</li>
+<li><p>将传输的文件解压到module文件夹下</p>
+<p>tar -zxvf 所需要解压的文件 -C /opt/module</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103200158613.png" srcset="/img/loading.gif" alt="image-20210103200158613"></p>
+</li>
+<li><p>配置JDK</p>
+<p>进入到jdk的文件中，获取jdk的路径，并复制。</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103200256716.png" srcset="/img/loading.gif" alt="image-20210103200256716"></p>
+<p>进入profile文件夹，修改环境变量。</p>
+<p>sudo vim /etc/profile</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103200914857.png" srcset="/img/loading.gif" alt="image-20210103200914857"></p>
+<p>此时还没配置好，需要再执行source /etc/profile</p>
+<p>最后判断java环境是否配置好，java -version,出现下面的界面就代表已经配置好。</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103200650944.png" srcset="/img/loading.gif" alt="image-20210103200650944"></p>
+</li>
+<li><p>配置hadoop</p>
+<p>也是需要配置环境变量，和上一步一样.</p>
+<p>sudo vim /etc/profile</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103200940103.png" srcset="/img/loading.gif" alt="image-20210103200940103"></p>
+<p>执行source /etc/profile</p>
+<p>检验hadoop是否配置成功,hadoop.出现一大堆命令就代表可以了</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103201125035.png" srcset="/img/loading.gif" alt="image-20210103201125035"></p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>SecureCRT远程连接</strong></p>
+<p>SecureCRT进行远程连接时，如果不想用IP连接，可以使用hostname，但是需要配置本地的host文件，进行映射。</p>
+<p>具体路径：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103191822894.png" srcset="/img/loading.gif" alt="image-20210103191822894"></p>
+<p>修改：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103192130395.png" srcset="/img/loading.gif" alt="image-20210103192130395"></p>
+<p>连接：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103191921903.png" srcset="/img/loading.gif" alt="image-20210103191921903"></p>
+<p>之后点击输入密码即可。</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103192001966.png" srcset="/img/loading.gif" alt="image-20210103192001966"></p>
+<hr>
+<h3 id="出现的问题"><a href="#出现的问题" class="headerlink" title="出现的问题"></a>出现的问题</h3><p>打开虚拟机发现不显示网卡ens33，不显示IP地址。</p>
+<p>解决方法：有可能是和 NetworkManager 服务有冲突，直接关闭 NetworkManger 服务就好了， service NetworkManager stop，并且禁止开机启动 chkconfig NetworkManager off 。之后重启就好了，service network restart 。</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103191122833.png" srcset="/img/loading.gif" alt="image-20210103191122833"></p>
+<h2 id="4-Hadoop运行模式"><a href="#4-Hadoop运行模式" class="headerlink" title="4.Hadoop运行模式"></a>4.Hadoop运行模式</h2><p>Hadoop运行模式包括：本地模式、伪分布式模式和完全分布式模式。</p>
+<h3 id="4-1本地运行模式"><a href="#4-1本地运行模式" class="headerlink" title="4.1本地运行模式"></a>4.1本地运行模式</h3><p>本地模式下，hadoop不需要其他的配置。</p>
+<h4 id="4-1-1-官方Grep案例"><a href="#4-1-1-官方Grep案例" class="headerlink" title="4.1.1 官方Grep案例"></a>4.1.1 官方Grep案例</h4><p>切换到hadoop目录下，创建input文件夹：mkdir input</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103205417416.png" srcset="/img/loading.gif" alt="image-20210103205417416"></p>
+<p>将etc/hadoop/下的所有xml文件复制到input文件夹下：</p>
+<p>cp etc/hadoop/*.xml input/</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103205529401.png" srcset="/img/loading.gif" alt="image-20210103205529401"></p>
+<p>运行官方案例Grep:</p>
+<p>hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.10.0.jar grep input output ‘dfs[a-z]+’</p>
+<p>解释：</p>
+<ul>
+<li>hadoop:启动命令</li>
+<li>jar: 以jar方式运行</li>
+<li>input:输入目录</li>
+<li>output:输出目录，注意：output不能提前创建，否则会抛出文件已经存在的异常。</li>
+<li>dfs[a-z]+:正则表达式，表示匹配dfs开头的。</li>
+</ul>
+<p>查看结果：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103212327242.png" srcset="/img/loading.gif" alt="image-20210103212327242"></p>
+<h4 id="4-1-2-官方WordCount案例"><a href="#4-1-2-官方WordCount案例" class="headerlink" title="4.1.2 官方WordCount案例"></a>4.1.2 官方WordCount案例</h4><p>切换到hadoop文件夹下。</p>
+<p>创建文件夹wcinput:mkdir wcinput</p>
+<p>进入wcinput文件夹，创建文件wc.input:touch wc.input</p>
+<p>向文件写入数据：vim wc.input</p>
+<pre><code class="hljs ebnf"><span class="hljs-attribute">hadoop yarn</span>
+<span class="hljs-attribute">hadoop mapreduce</span>
+<span class="hljs-attribute">abcdabc</span>
+<span class="hljs-attribute">admin a</span></code></pre>
+
+<p>同样需要注意的是：输出文件夹不能提前创建。</p>
+<p>运行案例：</p>
+<p>hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.10.0.jar wordcount wcinput wcoutput</p>
+<p>运行结果：</p>
+<p><img src="/images/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%BC%80%E5%8F%91%E5%BF%85%E5%A4%87%E6%A1%86%E6%9E%B6%E2%80%94%E2%80%94Hadoop/image-20210103213006714.png" srcset="/img/loading.gif" alt="image-20210103213006714"></p>
+<h3 id="4-2伪-分布式运行模式"><a href="#4-2伪-分布式运行模式" class="headerlink" title="4.2伪 分布式运行模式"></a>4.2伪 分布式运行模式</h3><p>==注意：启用伪分布式模式后，本地模式就不能用了。==</p>
+<p>原因是：本地模式用的是File协议，而伪分布式用的是hdfs协议。</p>
+<p>伪分布式模式是以集群方式搭建的，实际是完全分布式模式。适用于 电脑配置比较低，没有多台电脑的程序员。（只有一个服务器节点，其余都和完全分布式配置相同）</p>
 <h3 id="4-3完全分布式运行模式（开发重点）"><a href="#4-3完全分布式运行模式（开发重点）" class="headerlink" title="4.3完全分布式运行模式（开发重点）"></a>4.3完全分布式运行模式（开发重点）</h3><h2 id="5-Hadoop编译源码（面试重点）"><a href="#5-Hadoop编译源码（面试重点）" class="headerlink" title="5.Hadoop编译源码（面试重点）"></a>5.Hadoop编译源码（面试重点）</h2><h2 id="6-常见错误及解决方案"><a href="#6-常见错误及解决方案" class="headerlink" title="6.常见错误及解决方案"></a>6.常见错误及解决方案</h2>
             </div>
             <hr>
